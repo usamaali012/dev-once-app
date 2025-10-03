@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'core/constants/assets.dart';
 import 'core/theme/app_colors.dart';
 import 'features/auth/login/login_screen.dart';
 
@@ -18,6 +19,7 @@ class DevOnceApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         useMaterial3: true,
+        fontFamily: AppFonts.poppins,
         colorScheme: ColorScheme.fromSeed(seedColor: AppColors.primary),
         textButtonTheme: TextButtonThemeData(
           style: TextButton.styleFrom(
