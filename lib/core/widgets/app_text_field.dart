@@ -77,7 +77,7 @@ class _AppTextFieldState extends State<AppTextField> {
             widget.label!,
             style: TextStyle(
               color: widget.labelColor,
-              fontWeight: FontWeight.w600,
+              fontWeight: FontWeight.w500,
             ),
           ),
         )
@@ -95,6 +95,7 @@ class _AppTextFieldState extends State<AppTextField> {
         textInputAction: widget.textInputAction,
         validator: widget.validator,
         onChanged: widget.onChanged,
+        // inputFormatters: [],
         onFieldSubmitted: widget.onFieldSubmitted,
         obscureText: widget.isPassword ? _obscure : false,
         minLines: widget.minLines,

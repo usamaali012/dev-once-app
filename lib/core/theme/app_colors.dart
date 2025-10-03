@@ -5,6 +5,7 @@ abstract final class AppColors {
   static const Color primary = Color(0xFF02B3BD);
   static const Color secondary = Color(0xFF0F6679);
   static const Color grey = Color(0xFF808A93);
+  static const Color inputFillColor = Color(0xFFF3F3F3);
 }
 
 /// Reusable gradients live here to keep styling consistent.
