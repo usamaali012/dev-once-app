@@ -43,15 +43,17 @@ class AuthBackground extends StatelessWidget {
       child: ColoredBox(                 // base layer prevents Scaffold bg showing through
         color: AppColors.secondary,
         child: Stack(
-          fit: StackFit.expand,
           clipBehavior: Clip.none,
           children: [
-          // 1) Teal header
-          Container(
-            margin: EdgeInsets.only(top: topSafe),
+          // 1) Teal header (positioned with explicit height)
+          Positioned(
+            top: topSafe,
+            left: 0,
+            right: 0,
             height: headerHeight,
-            color: AppColors.secondary,
-            child: Row(
+            child: Container(
+              color: AppColors.secondary,
+              child: Row(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 // Leading area (bottom-left, 50% width)
@@ -101,7 +103,7 @@ class AuthBackground extends StatelessWidget {
                         Align(
                           alignment: Alignment.topRight,
                           child: SizedBox(
-                            height: size.height * 0.12,
+                            height: size.height * 0.10,
                             child: FittedBox(
                               fit: BoxFit.contain,
                               child: topRightDecoration!,
@@ -114,7 +116,7 @@ class AuthBackground extends StatelessWidget {
               ],
             ),
           ),
-
+          ),
           // 2) Curved white sheet (hard clipped, padded)
           Positioned.fill(
             top: topSafe + headerHeight - sheetTopOverlap,
@@ -150,7 +152,6 @@ class AuthBackground extends StatelessWidget {
                               ),
                             ),
                           ),
-                        const SizedBox(height: 16),
                         child,
                       ],
                     ),
@@ -178,6 +179,22 @@ class AuthBackground extends StatelessWidget {
                 ),
               ),
             ),
+
+          if (bottomLeftDecoration != null)
+            Positioned(
+              bottom: 0,
+              left: 0,
+              child: Align(
+                alignment: Alignment.bottomLeft,
+                child: SizedBox(
+                  height: size.height * 0.10,
+                  child: FittedBox(
+                    fit: BoxFit.contain,
+                    child: bottomLeftDecoration,
+                  ),
+                ),
+              ),
+            )
           ],
         ),
       ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 import '../theme/app_colors.dart';
 
@@ -10,10 +11,10 @@ class AppTextField extends StatefulWidget {
     this.label,
     this.placeholder,
     this.labelColor = AppColors.grey,
-    this.fillColor = const Color(0xFFF5F6FA),
-    this.prefixIcon,
-    this.suffixIcon,
-    this.iconColor = AppColors.grey,
+    this.fillColor = const Color(0xFFF3F3F3),
+    this.prefixSvg,
+    this.suffixSvg,
+    this.iconColor = const Color(0xFF626262),
     this.isPassword = false,
     this.enabled = true,
     this.readOnly = false,
@@ -33,8 +34,8 @@ class AppTextField extends StatefulWidget {
   final String? placeholder;
   final Color labelColor;
   final Color fillColor;
-  final IconData? prefixIcon;
-  final IconData? suffixIcon;
+  final String? prefixSvg;
+  final String? suffixSvg;
   final Color iconColor;
   final bool isPassword;
   final bool enabled;
@@ -64,8 +65,8 @@ class _AppTextFieldState extends State<AppTextField> {
   @override
   Widget build(BuildContext context) {
     final border = OutlineInputBorder(
-      borderRadius: BorderRadius.circular(16),
-      borderSide: BorderSide.none,
+      borderRadius: BorderRadius.circular(10),
+      borderSide: BorderSide(color: Color(0xFFE0E0E0)),
     );
 
     final children = <Widget>[];
@@ -108,22 +109,34 @@ class _AppTextFieldState extends State<AppTextField> {
             horizontal: 16,
             vertical: 18,
           ),
-          prefixIcon: widget.prefixIcon != null
-              ? Icon(widget.prefixIcon, color: widget.iconColor)
-              : null,
+          prefixIcon: widget.prefixSvg != null && widget.prefixSvg!.isNotEmpty
+            ? Padding(
+                padding: const EdgeInsets.only(left: 20, right: 9),
+                child: SvgPicture.asset(
+                  widget.prefixSvg!,
+                  colorFilter: ColorFilter.mode(widget.iconColor, BlendMode.srcIn),
+                ),
+              )
+            : null,
           suffixIcon: widget.isPassword
-              ? IconButton(
-                  onPressed: () => setState(() => _obscure = !_obscure),
-                  icon: Icon(
-                    _obscure
-                        ? Icons.visibility_off_outlined
-                        : Icons.visibility_outlined,
-                    color: widget.iconColor,
-                  ),
-                )
-              : widget.suffixIcon != null
-              ? Icon(widget.suffixIcon, color: widget.iconColor)
-              : null,
+            ? IconButton(
+                onPressed: () => setState(() => _obscure = !_obscure),
+                icon: Icon(
+                  _obscure
+                      ? Icons.visibility_off_outlined
+                      : Icons.visibility_outlined,
+                  color: widget.iconColor,
+                ),
+              )
+            : (widget.suffixSvg != null && widget.suffixSvg!.isNotEmpty
+                ? Padding(
+                    padding: const EdgeInsets.only(right: 12, left: 8),
+                    child: SvgPicture.asset(
+                      widget.suffixSvg!,
+                      colorFilter: ColorFilter.mode(widget.iconColor, BlendMode.srcIn),
+                    ),
+                  ) 
+          : null),
           border: border,
           enabledBorder: border,
           focusedBorder: border.copyWith(

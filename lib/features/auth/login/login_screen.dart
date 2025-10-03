@@ -55,20 +55,22 @@ class LoginScreen extends StatelessWidget {
               textAlign: TextAlign.center,
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                     color: Color(0xFF808A93),
+                    fontSize: 12,
+                    fontWeight: FontWeight.w500
                   ),
             ),
-            const SizedBox(height: 24),
+            const SizedBox(height: 50),
             const AppTextField(
               placeholder: 'User ID',
-              prefixIcon: Icons.person_outline,
+              prefixSvg: AppAssets.user,
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 40),
             const AppTextField(
               placeholder: 'Password',
-              prefixIcon: Icons.lock_outline,
+              prefixSvg: AppAssets.lock,
               isPassword: true,
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: 20),
             Align(
               alignment: Alignment.centerRight,
               child: TextButton(
@@ -77,12 +79,18 @@ class LoginScreen extends StatelessWidget {
                   padding: EdgeInsets.zero,
                   minimumSize: const Size(0, 0),
                   tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                  foregroundColor: AppColors.grey,
                 ),
-                child: const Text('Forgot password?'),
+                child: Text(
+                  'Forgot password?',
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: Colors.black,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w400
+                  ),
+                ),
               ),
             ),
-            const SizedBox(height: 24),
+            const SizedBox(height: 50),
             SizedBox(
               height: 56,
               child: ElevatedButton(
@@ -90,29 +98,37 @@ class LoginScreen extends StatelessWidget {
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.primary,
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16),
+                    borderRadius: BorderRadius.circular(12),
                   ),
                   textStyle: const TextStyle(
-                    fontWeight: FontWeight.w700,
+                    fontWeight: FontWeight.w600,
                     fontSize: 16,
                   ),
                 ),
                 child: const Text('Login'),
               ),
             ),
-            const SizedBox(height: 24),
+            const SizedBox(height: 50),
             Column(
               children: const [
                 Icon(Icons.fingerprint, size: 42, color: AppColors.secondary),
                 SizedBox(height: 12),
                 Divider(
-                  thickness: 1.2,
+                  thickness: 1.5,
                   color: AppColors.primary,
-                  indent: 120,
-                  endIndent: 120,
+                  indent: 100,
+                  endIndent: 100,
                 ),
-                SizedBox(height: 12),
-                Text('Privacy Policy'),
+                SizedBox(height: 10),
+                Text(
+                  'Privacy Policy',
+                  style: TextStyle(
+                    color: Color(0xFF808A93),
+                    fontSize: 18,
+                    fontWeight: FontWeight.w400
+                  )
+
+                ),
               ],
             ),
           ],
