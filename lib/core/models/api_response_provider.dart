@@ -48,7 +48,7 @@ class ApiResponseProvider<T> {
           return ApiResponse<T>(
             success: false,
             code: response.statusCode,
-            message: _errorMessage(body['message']),
+            message: _errorMessage(body),
             response: response,
             endpoint: endpoint,
             request: request,
@@ -65,12 +65,50 @@ class ApiResponseProvider<T> {
     }
   }
 
-  String _errorMessage(error) {
-    if (error is String) return error;
-    if (error is List) {
-      return error.first as String;
+  String _errorMessage(dynamic body) {
+    if (body is String) return body;
+    if (body is List && body.isNotEmpty) {
+      final first = body.first;
+      return first is String ? first : '$first';
     }
+    if (body is Map<String, dynamic>) {
+      final msg = body['message'];
+      if (msg is String && msg.isNotEmpty) return msg;
 
-    return '$error';
+      final detail = body['detail'];
+      if (detail is Map<String, dynamic>) {
+        final field = detail['field'];
+        final message = detail['message'];
+        if (field != null && message != null) {
+          return '$field: $message';
+        }
+        return '$detail';
+      }
+      // Handle FastAPI-style validation errors: { detail: [ {loc: [..., field], msg: 'Field required', type: 'missing'} ] }
+      if (detail is List && detail.isNotEmpty) {
+        final first = detail.first;
+        if (first is Map<String, dynamic>) {
+          final loc = first['loc'];
+          final msg2 = first['msg'];
+          final type = first['type'];
+          String? fieldName;
+          if (loc is List && loc.isNotEmpty) {
+            fieldName = loc.last?.toString();
+          }
+          if (fieldName != null && fieldName.isNotEmpty) {
+            final isMissing = (type == 'missing') ||
+                (msg2 is String && msg2.toLowerCase().contains('required'));
+            return isMissing
+                ? '$fieldName is missing'
+                : msg2 is String && msg2.isNotEmpty
+                    ? '$fieldName: $msg2'
+                    : '$fieldName is invalid';
+          }
+          if (msg2 is String && msg2.isNotEmpty) return msg2;
+        }
+      }
+      if (detail is String) return detail;
+    }
+    return '$body';
   }
 }
