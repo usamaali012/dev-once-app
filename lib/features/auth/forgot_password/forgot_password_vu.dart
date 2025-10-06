@@ -44,10 +44,19 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
     final vm = ForgotPasswordVm();
     final res = await vm.submit(ForgotPasswordRequest(username: username));
     setState(() => _loading = false);
-
     if (res.success) {
+      final userId = (res.data?['user_id'] ?? res.data?['userId'])?.toString() ?? '';
+      if (userId.isEmpty) {
+        showAppSnackBar(
+          context,
+          title: 'Missing user id',
+          message: 'Unable to proceed. Please try again.',
+          type: ContentType.warning,
+        );
+        return;
+      }
       Navigator.of(context).push(
-        MaterialPageRoute(builder: (_) => const OtpScreen()),
+        MaterialPageRoute(builder: (_) => OtpScreen(userId: userId, username: username)),
       );
     } else {
       showAppSnackBar(
@@ -165,4 +174,6 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
     );
   }
 }
+
+
 
