@@ -29,6 +29,7 @@ class ForgotPasswordScreen extends StatelessWidget {
         title: 'Forgot\nPassword',
         headerFraction: 0.30,
         topCornerRadius: 30,
+        showBackButton: true,
         leading: doIcon,
         topRightDecoration: roundedTopRight,
         overlapGraphic: null,

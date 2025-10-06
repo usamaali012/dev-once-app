@@ -14,6 +14,9 @@ class AuthBackground extends StatelessWidget {
     this.bottomLeftDecoration,
     this.overlapGraphic,          // e.g., phone svg overlapping the sheet
     this.showTopDivider = false,
+    this.showBackButton = false,
+    this.backIconColor = Colors.white,
+    this.onBack,
   });
 
   final String title;
@@ -25,6 +28,9 @@ class AuthBackground extends StatelessWidget {
   final Widget? bottomLeftDecoration;
   final Widget? overlapGraphic;
   final bool showTopDivider;
+  final bool showBackButton;
+  final Color backIconColor;
+  final VoidCallback? onBack;
 
   @override
   Widget build(BuildContext context) {
@@ -194,7 +200,21 @@ class AuthBackground extends StatelessWidget {
                   ),
                 ),
               ),
-            )
+            ),
+
+          if (showBackButton)
+            Positioned(
+              top: topSafe + 8,
+              left: 8,
+              child: IconButton(
+                tooltip: 'Back',
+                icon: Icon(Icons.arrow_back_ios_new_rounded, color: backIconColor),
+                onPressed: onBack ?? () {
+                  final navigator = Navigator.of(context);
+                  if (navigator.canPop()) navigator.maybePop();
+                },
+              ),
+            ),
           ],
         ),
       ),
