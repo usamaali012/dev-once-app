@@ -19,8 +19,7 @@ class ForgotPasswordVm {
         request: request.toJson(),
       ),
     );
-    
+
     return res;
   }
 }
-
