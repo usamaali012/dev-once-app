@@ -4,7 +4,7 @@ import 'package:dev_once_app/core/widgets/app_snackbar.dart';
 import 'package:dev_once_app/core/widgets/app_text_field.dart';
 import 'package:dev_once_app/features/auth/forgot_password/forgot_password_model.dart';
 import 'package:dev_once_app/features/auth/forgot_password/forgot_password_vm.dart';
-import 'package:dev_once_app/features/auth/otp/otp_screen.dart';
+import 'package:dev_once_app/features/auth/otp/otp_vu.dart';
 import 'package:dev_once_app/features/auth/widgets/auth_background.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -56,7 +56,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
         return;
       }
       Navigator.of(context).push(
-        MaterialPageRoute(builder: (_) => OtpScreen(userId: userId, username: username)),
+        MaterialPageRoute(builder: (_) => OtpVU(userId: userId, username: username)),
       );
     } else {
       showAppSnackBar(
