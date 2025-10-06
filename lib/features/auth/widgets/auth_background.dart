@@ -13,7 +13,6 @@ class AuthBackground extends StatelessWidget {
     this.topRightDecoration,      // e.g., rounded shapes svg
     this.bottomLeftDecoration,
     this.overlapGraphic,          // e.g., phone svg overlapping the sheet
-    this.showTopDivider = false,
     this.showBackButton = false,
     this.backIconColor = Colors.white,
     this.onBack,
@@ -27,7 +26,6 @@ class AuthBackground extends StatelessWidget {
   final Widget? topRightDecoration;
   final Widget? bottomLeftDecoration;
   final Widget? overlapGraphic;
-  final bool showTopDivider;
   final bool showBackButton;
   final Color backIconColor;
   final VoidCallback? onBack;
@@ -144,23 +142,7 @@ class AuthBackground extends StatelessWidget {
                       size.width * 0.06,
                       size.height * 0.04,
                     ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        if (showTopDivider)
-                          Center(
-                            child: Container(
-                              width: size.width * 0.36,
-                              height: 2,
-                              decoration: BoxDecoration(
-                                color: AppColors.grey.withOpacity(0.35),
-                                borderRadius: BorderRadius.circular(2),
-                              ),
-                            ),
-                          ),
-                        child,
-                      ],
-                    ),
+                    child: child,
                   ),
                 ),
               ),
