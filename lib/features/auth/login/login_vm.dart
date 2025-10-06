@@ -10,12 +10,11 @@ class LoginVm {
   LoginVm({ApiClient? client}) : _client = client ?? ApiClient();
 
   // Adjust this to your backend route
-  static const String _loginEndpoint = '/auth/login';
+  static const String _loginEndpoint = '/auth/customer-login';
 
   Future<ApiResponse<LoginResponse>> login({
     required String username,
     required String password,
-    bool asForm = false,
   }) async {
     final req = LoginRequest(username: username, password: password);
     final res = await _client.post<LoginResponse>(
@@ -23,7 +22,7 @@ class LoginVm {
         endpoint: _loginEndpoint,
         request: req.toJson(),
         fromJson: (json) => LoginResponse.fromJson(json),
-        isFormData: asForm,
+        isFormData: true,
       ),
     );
 

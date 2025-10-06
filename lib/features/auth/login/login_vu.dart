@@ -3,7 +3,7 @@ import 'package:dev_once_app/core/theme/app_colors.dart';
 import 'package:dev_once_app/core/widgets/app_text_field.dart';
 import 'package:dev_once_app/core/widgets/app_snackbar.dart';
 import 'package:dev_once_app/features/auth/widgets/auth_background.dart';
-import 'package:dev_once_app/features/auth/forgot_password/forgot_password_screen.dart';
+import 'package:dev_once_app/features/auth/forgot_password/forgot_password_vu.dart';
 import 'package:dev_once_app/features/auth/login/login_vm.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -216,4 +216,3 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 }
-
