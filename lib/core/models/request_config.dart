@@ -4,6 +4,12 @@ class RequestConfig<T> {
   final String endpoint;
   final RequestMap? request;
   final ModelFromJson<T>? fromJson;
+  final bool isFormData;
 
-  const RequestConfig({required this.endpoint, this.request, this.fromJson});
+  const RequestConfig({
+    required this.endpoint,
+    this.request,
+    this.fromJson,
+    this.isFormData = false,
+  });
 }
