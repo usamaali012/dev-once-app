@@ -29,7 +29,13 @@ class ClientRemoteDatasource {
 
   Future<ApiResponse<T>> post<T>(RequestConfig config) async {
     final url = Uri.parse('${_config.baseUrl}${config.endpoint}');
-    final body = config.isFormData ? config.request : jsonEncode(config.request);
+    dynamic body = jsonEncode(config.request);
+    var headers = _config.headers;
+
+    if (config.isFormData) {
+      body = config.request;
+      headers['Content-Type'] = 'application/x-www-form-urlencoded';
+    }
 
     final response = ApiResponseProvider<T>(
       endpoint: config.endpoint,
@@ -37,7 +43,7 @@ class ClientRemoteDatasource {
       onRequest: () async {
         return await _config.client.post(
           url,
-          headers: _config.headers,
+          headers: headers,
           body: body,
         );
       },
@@ -49,7 +55,13 @@ class ClientRemoteDatasource {
 
   Future<ApiResponse<T>> patch<T>(RequestConfig config) async {
     final url = Uri.parse('${_config.baseUrl}${config.endpoint}');
-    final body = config.isFormData ? config.request : jsonEncode(config.request);
+    dynamic body = jsonEncode(config.request);
+    var headers = _config.headers;
+
+    if (config.isFormData) {
+      body = config.request;
+      headers['Content-Type'] = 'application/x-www-form-urlencoded';
+    }
 
     final response = ApiResponseProvider<T>(
       endpoint: config.endpoint,
@@ -57,7 +69,7 @@ class ClientRemoteDatasource {
       onRequest: () async {
         return await _config.client.patch(
           url,
-          headers: _config.headers,
+          headers: headers,
           body: body,
         );
       },
@@ -69,7 +81,6 @@ class ClientRemoteDatasource {
 
   Future<ApiResponse<T>> delete<T>(RequestConfig config) async {
     final url = Uri.parse('${_config.baseUrl}${config.endpoint}');
-    final body = config.isFormData ? config.request : jsonEncode(config.request);
 
     final response = ApiResponseProvider<T>(
       endpoint: config.endpoint,
@@ -78,7 +89,7 @@ class ClientRemoteDatasource {
         return await _config.client.delete(
           url,
           headers: _config.headers,
-          body: body,
+          body: jsonEncode(config.request),
         );
       },
       fromJson: config.fromJson,
