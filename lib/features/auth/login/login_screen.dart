@@ -2,6 +2,7 @@ import 'package:dev_once_app/core/constants/assets.dart';
 import 'package:dev_once_app/core/theme/app_colors.dart';
 import 'package:dev_once_app/core/widgets/app_text_field.dart';
 import 'package:dev_once_app/features/auth/widgets/auth_background.dart';
+import 'package:dev_once_app/features/auth/forgot_password/forgot_password_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -74,7 +75,13 @@ class LoginScreen extends StatelessWidget {
             Align(
               alignment: Alignment.centerRight,
               child: TextButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => const ForgotPasswordScreen(),
+                    ),
+                  );
+                },
                 style: TextButton.styleFrom(
                   padding: EdgeInsets.zero,
                   minimumSize: const Size(0, 0),
