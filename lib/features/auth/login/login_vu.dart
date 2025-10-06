@@ -2,10 +2,9 @@ import 'package:dev_once_app/core/constants/assets.dart';
 import 'package:dev_once_app/core/theme/app_colors.dart';
 import 'package:dev_once_app/core/widgets/app_text_field.dart';
 import 'package:dev_once_app/core/widgets/app_snackbar.dart';
-import 'package:dev_once_app/features/auth/login/data/login_api.dart';
-import 'package:dev_once_app/features/auth/login/data/models/login_request.dart';
 import 'package:dev_once_app/features/auth/widgets/auth_background.dart';
 import 'package:dev_once_app/features/auth/forgot_password/forgot_password_screen.dart';
+import 'package:dev_once_app/features/auth/login/login_vm.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
@@ -46,8 +45,8 @@ class _LoginScreenState extends State<LoginScreen> {
     }
 
     setState(() => _loading = true);
-    final api = LoginApi();
-    final res = await api.login(LoginRequest(username: username, password: password));
+    final vm = LoginVm();
+    final res = await vm.login(username: username, password: password);
     setState(() => _loading = false);
 
     if (res.success) {
@@ -115,7 +114,7 @@ class _LoginScreenState extends State<LoginScreen> {
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                     color: Color(0xFF808A93),
                     fontSize: 12,
-                    fontWeight: FontWeight.w500
+                    fontWeight: FontWeight.w500,
                   ),
             ),
             const SizedBox(height: 50),
@@ -155,10 +154,10 @@ class _LoginScreenState extends State<LoginScreen> {
                 child: Text(
                   'Forgot password?',
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: Colors.black,
-                    fontSize: 12,
-                    fontWeight: FontWeight.w400
-                  ),
+                        color: Colors.black,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w400,
+                      ),
                 ),
               ),
             ),
@@ -206,9 +205,8 @@ class _LoginScreenState extends State<LoginScreen> {
                   style: TextStyle(
                     color: Color(0xFF808A93),
                     fontSize: 18,
-                    fontWeight: FontWeight.w400
-                  )
-
+                    fontWeight: FontWeight.w400,
+                  ),
                 ),
               ],
             ),
@@ -218,3 +216,4 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 }
+

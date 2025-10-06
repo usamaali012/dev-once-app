@@ -1,21 +1,29 @@
 import 'package:dev_once_app/core/models/api_response.dart';
 import 'package:dev_once_app/core/models/request_config.dart';
 import 'package:dev_once_app/core/services/api/api_client.dart';
-import 'package:dev_once_app/features/auth/login/data/models/login_request.dart';
-import 'package:dev_once_app/features/auth/login/data/models/login_response.dart';
 
-class LoginApi {
+import 'login_model.dart';
+
+class LoginVm {
   final ApiClient _client;
 
-  LoginApi({ApiClient? client}) : _client = client ?? ApiClient();
+  LoginVm({ApiClient? client}) : _client = client ?? ApiClient();
 
-  Future<ApiResponse<LoginResponse>> login(LoginRequest request) async {
+  // Adjust this to your backend route
+  static const String _loginEndpoint = '/auth/login';
+
+  Future<ApiResponse<LoginResponse>> login({
+    required String username,
+    required String password,
+    bool asForm = false,
+  }) async {
+    final req = LoginRequest(username: username, password: password);
     final res = await _client.post<LoginResponse>(
       RequestConfig<LoginResponse>(
-        endpoint: '/auth/customer-login',
-        request: request.toJson(),
+        endpoint: _loginEndpoint,
+        request: req.toJson(),
         fromJson: (json) => LoginResponse.fromJson(json),
-        isFormData: true
+        isFormData: asForm,
       ),
     );
 
@@ -25,4 +33,3 @@ class LoginApi {
     return res;
   }
 }
-
