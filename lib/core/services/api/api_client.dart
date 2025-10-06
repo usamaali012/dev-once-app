@@ -232,7 +232,7 @@ class ApiClient {
   ClientConfig _configInitialization() {
     _config = ClientConfig(
       client: Client(),
-      baseUrl: 'https://64acc9c24a9b.ngrok-free.app',
+      baseUrl: 'https://backend.tawakalsolutions.com/api',
       headers: _headers,
     );
 
