@@ -56,7 +56,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
         return;
       }
       Navigator.of(context).push(
-        MaterialPageRoute(builder: (_) => OtpVU(userId: userId, username: username)),
+        MaterialPageRoute(builder: (_) => OtpScreen(userId: userId, username: username)),
       );
     } else {
       showAppSnackBar(
