@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'core/constants/assets.dart';
 import 'core/theme/app_colors.dart';
-import 'features/auth/login/login_screen.dart';
+import 'features/auth/login/widgets/login_screen.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
