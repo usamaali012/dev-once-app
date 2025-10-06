@@ -43,6 +43,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
     setState(() => _loading = true);
     final vm = ForgotPasswordVm();
     final res = await vm.submit(ForgotPasswordRequest(username: username));
+    if (!mounted) return;
     setState(() => _loading = false);
     if (res.success) {
       final userId = (res.data?['user_id'] ?? res.data?['userId'])?.toString() ?? '';
@@ -174,6 +175,5 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
     );
   }
 }
-
 
 

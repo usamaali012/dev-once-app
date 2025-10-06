@@ -47,6 +47,7 @@ class _LoginScreenState extends State<LoginScreen> {
     setState(() => _loading = true);
     final vm = LoginVm();
     final res = await vm.login(username: username, password: password);
+    if (!mounted) return;
     setState(() => _loading = false);
 
     if (res.success) {
