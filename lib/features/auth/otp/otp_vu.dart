@@ -52,6 +52,12 @@ class _OtpScreenState extends State<OtpScreen> {
   // ignore: unused_element
   String get _otp => _digits.map((c) => c.text).join();
 
+  String _formatTime(int totalSeconds) {
+    final minutes = totalSeconds ~/ 60;
+    final seconds = totalSeconds % 60;
+    return '${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}';
+  }
+
   void _onChanged(int idx, String value) {
     if (value.length == 1 && idx < _nodes.length - 1) {
       _nodes[idx + 1].requestFocus();
@@ -123,9 +129,7 @@ class _OtpScreenState extends State<OtpScreen> {
                 ),
                 const SizedBox(width: 6),
                 Text(
-                  _seconds > 0
-                      ? '00:${_seconds.toString().padLeft(2, '0')}'
-                      : '00:00',
+                  _formatTime(_seconds),
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                         color: AppColors.primary,
                         fontWeight: FontWeight.w600,
