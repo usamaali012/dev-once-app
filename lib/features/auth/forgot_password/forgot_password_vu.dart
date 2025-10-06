@@ -1,13 +1,63 @@
+import 'package:dev_once_app/core/constants/assets.dart';
 import 'package:dev_once_app/core/theme/app_colors.dart';
+import 'package:dev_once_app/core/widgets/app_snackbar.dart';
 import 'package:dev_once_app/core/widgets/app_text_field.dart';
+import 'package:dev_once_app/features/auth/forgot_password/forgot_password_model.dart';
+import 'package:dev_once_app/features/auth/forgot_password/forgot_password_vm.dart';
+import 'package:dev_once_app/features/auth/otp/otp_screen.dart';
 import 'package:dev_once_app/features/auth/widgets/auth_background.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 
-import 'package:dev_once_app/core/constants/assets.dart';
-
-class ForgotPasswordScreen extends StatelessWidget {
+class ForgotPasswordScreen extends StatefulWidget {
   const ForgotPasswordScreen({super.key});
+
+  @override
+  State<ForgotPasswordScreen> createState() => _ForgotPasswordScreenState();
+}
+
+class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
+  final _userCtrl = TextEditingController();
+  bool _loading = false;
+
+  @override
+  void dispose() {
+    _userCtrl.dispose();
+    super.dispose();
+  }
+
+  Future<void> _onSend() async {
+    if (_loading) return;
+    final username = _userCtrl.text.trim();
+    if (username.isEmpty) {
+      showAppSnackBar(
+        context,
+        title: 'Missing info',
+        message: 'Please enter your User ID.',
+        type: ContentType.warning,
+      );
+      return;
+    }
+
+    setState(() => _loading = true);
+    final vm = ForgotPasswordVm();
+    final res = await vm.submit(ForgotPasswordRequest(username: username));
+    setState(() => _loading = false);
+
+    if (res.success) {
+      Navigator.of(context).push(
+        MaterialPageRoute(builder: (_) => const OtpScreen()),
+      );
+    } else {
+      showAppSnackBar(
+        context,
+        title: 'Request Failed',
+        message: res.message ?? 'Unable to send OTP. Try again.',
+        type: ContentType.failure,
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -41,15 +91,18 @@ class ForgotPasswordScreen extends StatelessWidget {
               'Enter User ID to reset your password',
               textAlign: TextAlign.center,
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: Color(0xFF808A93),
-                    fontWeight: FontWeight.w500
+                    color: const Color(0xFF808A93),
+                    fontWeight: FontWeight.w500,
                   ),
             ),
             const SizedBox(height: 55),
-            const AppTextField(
+            AppTextField(
+              controller: _userCtrl,
               placeholder: 'User ID',
-              // Prefer SVG user icon; falls back to IconData if removed
-              prefixSvg: 'assets/svgs/user.svg',
+              prefixSvg: AppAssets.user,
+              textInputAction: TextInputAction.done,
+              autofillHints: const [AutofillHints.username],
+              onFieldSubmitted: (_) => _onSend(),
             ),
             const SizedBox(height: 45),
             Row(
@@ -79,7 +132,7 @@ class ForgotPasswordScreen extends StatelessWidget {
                   child: SizedBox(
                     height: 56,
                     child: ElevatedButton(
-                      onPressed: () {},
+                      onPressed: _loading ? null : _onSend,
                       style: ElevatedButton.styleFrom(
                         backgroundColor: AppColors.primary,
                         shape: RoundedRectangleBorder(
@@ -90,7 +143,17 @@ class ForgotPasswordScreen extends StatelessWidget {
                           fontSize: 16,
                         ),
                       ),
-                      child: const Text('Send'),
+                      child: _loading
+                          ? const SizedBox(
+                              width: 22,
+                              height: 22,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2.4,
+                                valueColor:
+                                    AlwaysStoppedAnimation<Color>(Colors.white),
+                              ),
+                            )
+                          : const Text('Send'),
                     ),
                   ),
                 ),
@@ -102,3 +165,4 @@ class ForgotPasswordScreen extends StatelessWidget {
     );
   }
 }
+
