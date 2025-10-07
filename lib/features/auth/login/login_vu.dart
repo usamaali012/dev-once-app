@@ -15,7 +15,6 @@ class LoginScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Provide the ViewModel to this screen subtree
     return ChangeNotifierProvider(
       create: (_) => LoginVm(),
       child: const _LoginView(),
@@ -32,27 +31,66 @@ class _LoginView extends StatefulWidget {
 
 class _LoginViewState extends State<_LoginView> {
   final _formKey = GlobalKey<FormState>();
+
   final _userCtrl = TextEditingController();
   final _passCtrl = TextEditingController();
+  final _userFocus = FocusNode();
+  final _passFocus = FocusNode();
+
+  bool _submitted = false;
+  bool _userTouched = false;
+  bool _passTouched = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _userFocus.addListener(() {
+      if (_userFocus.hasFocus) {
+        setState(() => _userTouched = true);
+      }
+    });
+    _passFocus.addListener(() {
+      if (_passFocus.hasFocus) {
+        setState(() => _passTouched = true);
+      }
+    });
+  }
 
   @override
   void dispose() {
     _userCtrl.dispose();
     _passCtrl.dispose();
+    _userFocus.dispose();
+    _passFocus.dispose();
     super.dispose();
+  }
+
+  String? _validateUser(String? v) {
+    // Show error only if user has interacted with this field OR form was submitted
+    if (!_userTouched && !_submitted) return null;
+    if (v == null || v.trim().isEmpty) return 'User ID is required';
+    if (v.length < 6) return 'Minimum 6 characters';
+    return null;
+  }
+
+  String? _validatePass(String? v) {
+    if (!_passTouched && !_submitted) return null;
+    if (v == null || v.isEmpty) return 'Password is required';
+    // if (v.length < 6) return 'Minimum 6 characters';
+    return null;
   }
 
   Future<void> _onLogin() async {
     FocusScope.of(context).unfocus();
 
-    // Validate required fields
+    setState(() => _submitted = true); // allow all errors to show on submit
     final ok = _formKey.currentState?.validate() ?? false;
     if (!ok) {
       return;
     }
 
     final vm = context.read<LoginVm>();
-    if (vm.loading) return; // safety
+    if (vm.loading) return;
 
     final res = await vm.login(
       username: _userCtrl.text.trim(),
@@ -67,7 +105,7 @@ class _LoginViewState extends State<_LoginView> {
         message: 'You are now signed in.',
         type: ContentType.success,
       );
-      // e.g. Navigator.pushReplacement(...)
+      // Navigator.pushReplacement(...);
     } else {
       showAppSnackBar(
         context,
@@ -80,9 +118,6 @@ class _LoginViewState extends State<_LoginView> {
 
   @override
   Widget build(BuildContext context) {
-    // NOTE: Don't call context.watch<LoginVm>() here;
-    // only the button below listens to loading via Selector.
-
     final doIcon = SvgPicture.asset(
       AppAssets.authDo,
       width: 40,
@@ -122,8 +157,9 @@ class _LoginViewState extends State<_LoginView> {
         overlapGraphic: mobileIcon,
         child: Form(
           key: _formKey,
-          // If your AppTextField supports it, you can add:
-          autovalidateMode: AutovalidateMode.onUserInteraction,
+          // Keep the whole form from autovalidating everything up front.
+          // We control visibility via touched + submitted flags.
+          autovalidateMode: AutovalidateMode.disabled,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
@@ -138,20 +174,22 @@ class _LoginViewState extends State<_LoginView> {
               ),
               const SizedBox(height: 50),
 
+              // USERNAME (required; validate after touch or submit)
               AppTextField(
                 controller: _userCtrl,
                 placeholder: 'User ID',
                 prefixSvg: AppAssets.user,
                 textInputAction: TextInputAction.next,
-                validator: (v) {
-                  if (v == null || v.trim().isEmpty) { return 'User ID is required';}
-                  if (v.length < 6) return 'Minimum 6 characters';
-                  return null;
+                focusNode: _userFocus,
+                validator: _validateUser,
+                onChanged: (_) {
+                  if (!_userTouched) setState(() => _userTouched = true);
                 },
               ),
 
               const SizedBox(height: 40),
 
+              // PASSWORD (required; validate after touch or submit)
               AppTextField(
                 controller: _passCtrl,
                 placeholder: 'Password',
@@ -159,9 +197,10 @@ class _LoginViewState extends State<_LoginView> {
                 isPassword: true,
                 textInputAction: TextInputAction.done,
                 onFieldSubmitted: (_) => _onLogin(),
-                validator: (v) {
-                  if (v == null || v.isEmpty) return 'Password is required';
-                  return null;
+                focusNode: _passFocus,
+                validator: _validatePass,
+                onChanged: (_) {
+                  if (!_passTouched) setState(() => _passTouched = true);
                 },
               ),
 

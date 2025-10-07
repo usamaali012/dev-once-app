@@ -40,8 +40,12 @@ class _OtpScreenState extends State<OtpScreen> {
 
   @override
   void dispose() {
-    for (final c in _digits) c.dispose();
-    for (final n in _nodes) n.dispose();
+    for (final c in _digits) {
+      c.dispose();
+    }
+    for (final n in _nodes) {
+      n.dispose();
+    }
     _timer?.cancel();
     super.dispose();
   }
