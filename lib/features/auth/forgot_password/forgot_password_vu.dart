@@ -7,6 +7,7 @@ import 'package:dev_once_app/features/auth/forgot_password/forgot_password_vm.da
 import 'package:dev_once_app/features/auth/otp/otp_vu.dart';
 import 'package:dev_once_app/features/auth/widgets/auth_background.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_extensions_pack/flutter_extensions_pack.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 
@@ -56,6 +57,8 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
         );
         return;
       }
+
+      context.push(OtpScreen(userId: userId, username: username));
       Navigator.of(context).push(
         MaterialPageRoute(builder: (_) => OtpScreen(userId: userId, username: username)),
       );
@@ -121,7 +124,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                   child: SizedBox(
                     height: 56,
                     child: OutlinedButton(
-                      onPressed: () => Navigator.of(context).maybePop(),
+                      onPressed: context.pop,
                       style: OutlinedButton.styleFrom(
                         side: const BorderSide(color: Color(0xFFD6D6D6)),
                         shape: RoundedRectangleBorder(
