@@ -124,7 +124,6 @@ class _LoginScreenState extends State<LoginScreen> {
               placeholder: 'User ID',
               prefixSvg: AppAssets.user,
               textInputAction: TextInputAction.next,
-              autofillHints: const [AutofillHints.username],
             ),
             const SizedBox(height: 40),
             AppTextField(
@@ -133,7 +132,6 @@ class _LoginScreenState extends State<LoginScreen> {
               prefixSvg: AppAssets.lock,
               isPassword: true,
               textInputAction: TextInputAction.done,
-              autofillHints: const [AutofillHints.password],
               onFieldSubmitted: (_) => _onLogin(),
             ),
             const SizedBox(height: 20),
