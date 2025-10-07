@@ -15,7 +15,7 @@ class LoginScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Provide the ViewModel to this subtree
+    // Provide the ViewModel to this screen subtree
     return ChangeNotifierProvider(
       create: (_) => LoginVm(),
       child: const _LoginView(),
@@ -31,6 +31,7 @@ class _LoginView extends StatefulWidget {
 }
 
 class _LoginViewState extends State<_LoginView> {
+  final _formKey = GlobalKey<FormState>();
   final _userCtrl = TextEditingController();
   final _passCtrl = TextEditingController();
 
@@ -44,23 +45,19 @@ class _LoginViewState extends State<_LoginView> {
   Future<void> _onLogin() async {
     FocusScope.of(context).unfocus();
 
-    final username = _userCtrl.text.trim();
-    final password = _passCtrl.text;
-
-    if (username.isEmpty || password.isEmpty) {
-      showAppSnackBar(
-        context,
-        title: 'Missing info',
-        message: 'Please enter both User ID and Password.',
-        type: ContentType.warning,
-      );
+    // Validate required fields
+    final ok = _formKey.currentState?.validate() ?? false;
+    if (!ok) {
       return;
     }
 
     final vm = context.read<LoginVm>();
-    if (vm.loading) return;
+    if (vm.loading) return; // safety
 
-    final res = await vm.login(username: username, password: password);
+    final res = await vm.login(
+      username: _userCtrl.text.trim(),
+      password: _passCtrl.text,
+    );
     if (!mounted) return;
 
     if (res.success) {
@@ -70,8 +67,7 @@ class _LoginViewState extends State<_LoginView> {
         message: 'You are now signed in.',
         type: ContentType.success,
       );
-      // Optionally navigate here after success
-      // Navigator.of(context).pushReplacement(...);
+      // e.g. Navigator.pushReplacement(...)
     } else {
       showAppSnackBar(
         context,
@@ -84,7 +80,8 @@ class _LoginViewState extends State<_LoginView> {
 
   @override
   Widget build(BuildContext context) {
-    final loading = context.watch<LoginVm>().loading;
+    // NOTE: Don't call context.watch<LoginVm>() here;
+    // only the button below listens to loading via Selector.
 
     final doIcon = SvgPicture.asset(
       AppAssets.authDo,
@@ -123,110 +120,139 @@ class _LoginViewState extends State<_LoginView> {
         topRightDecoration: roundedTopRight,
         bottomLeftDecoration: roundedBottomLeft,
         overlapGraphic: mobileIcon,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Text(
-              'Enter your User ID and password to continue',
-              textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: const Color(0xFF808A93),
-                    fontSize: 12,
-                    fontWeight: FontWeight.w500,
-                  ),
-            ),
-            const SizedBox(height: 50),
-            AppTextField(
-              controller: _userCtrl,
-              placeholder: 'User ID',
-              prefixSvg: AppAssets.user,
-              textInputAction: TextInputAction.next,
-            ),
-            const SizedBox(height: 40),
-            AppTextField(
-              controller: _passCtrl,
-              placeholder: 'Password',
-              prefixSvg: AppAssets.lock,
-              isPassword: true,
-              textInputAction: TextInputAction.done,
-              onFieldSubmitted: (_) => _onLogin(),
-            ),
-            const SizedBox(height: 20),
-            Align(
-              alignment: Alignment.centerRight,
-              child: TextButton(
-                onPressed: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => const ForgotPasswordScreen(),
+        child: Form(
+          key: _formKey,
+          // If your AppTextField supports it, you can add:
+          autovalidateMode: AutovalidateMode.onUserInteraction,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Text(
+                'Enter your User ID and password to continue',
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: const Color(0xFF808A93),
+                      fontSize: 12,
+                      fontWeight: FontWeight.w500,
                     ),
-                  );
+              ),
+              const SizedBox(height: 50),
+
+              AppTextField(
+                controller: _userCtrl,
+                placeholder: 'User ID',
+                prefixSvg: AppAssets.user,
+                textInputAction: TextInputAction.next,
+                validator: (v) {
+                  if (v == null || v.trim().isEmpty) { return 'User ID is required';}
+                  if (v.length < 6) return 'Minimum 6 characters';
+                  return null;
                 },
-                style: TextButton.styleFrom(
-                  padding: EdgeInsets.zero,
-                  minimumSize: const Size(0, 0),
-                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                ),
-                child: Text(
-                  'Forgot password?',
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: Colors.black,
-                        fontSize: 12,
-                        fontWeight: FontWeight.w400,
+              ),
+
+              const SizedBox(height: 40),
+
+              AppTextField(
+                controller: _passCtrl,
+                placeholder: 'Password',
+                prefixSvg: AppAssets.lock,
+                isPassword: true,
+                textInputAction: TextInputAction.done,
+                onFieldSubmitted: (_) => _onLogin(),
+                validator: (v) {
+                  if (v == null || v.isEmpty) return 'Password is required';
+                  return null;
+                },
+              ),
+
+              const SizedBox(height: 20),
+
+              Align(
+                alignment: Alignment.centerRight,
+                child: TextButton(
+                  onPressed: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => const ForgotPasswordScreen(),
                       ),
-                ),
-              ),
-            ),
-            const SizedBox(height: 50),
-            SizedBox(
-              height: 56,
-              child: ElevatedButton(
-                onPressed: loading ? null : _onLogin,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.primary,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
+                    );
+                  },
+                  style: TextButton.styleFrom(
+                    padding: EdgeInsets.zero,
+                    minimumSize: const Size(0, 0),
+                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                   ),
-                  textStyle: const TextStyle(
-                    fontWeight: FontWeight.w600,
-                    fontSize: 16,
-                  ),
-                ),
-                child: loading
-                    ? const SizedBox(
-                        width: 22,
-                        height: 22,
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2.4,
-                          valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                  child: Text(
+                    'Forgot password?',
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          color: Colors.black,
+                          fontSize: 12,
+                          fontWeight: FontWeight.w400,
                         ),
-                      )
-                    : const Text('Login'),
-              ),
-            ),
-            const SizedBox(height: 50),
-            const Column(
-              children: [
-                Icon(Icons.fingerprint, size: 42, color: AppColors.secondary),
-                SizedBox(height: 12),
-                Divider(
-                  thickness: 1.5,
-                  color: AppColors.primary,
-                  indent: 100,
-                  endIndent: 100,
-                ),
-                SizedBox(height: 10),
-                Text(
-                  'Privacy Policy',
-                  style: TextStyle(
-                    color: Color(0xFF808A93),
-                    fontSize: 18,
-                    fontWeight: FontWeight.w400,
                   ),
                 ),
-              ],
-            ),
-          ],
+              ),
+
+              const SizedBox(height: 50),
+
+              // BUTTON: only this rebuilds on loading
+              SizedBox(
+                height: 56,
+                child: Selector<LoginVm, bool>(
+                  selector: (_, vm) => vm.loading,
+                  builder: (context, loading, _) {
+                    return ElevatedButton(
+                      onPressed: loading ? null : _onLogin,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.primary,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        textStyle: const TextStyle(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 16,
+                        ),
+                      ),
+                      child: loading
+                          ? const SizedBox(
+                              width: 22,
+                              height: 22,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2.4,
+                                valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                              ),
+                            )
+                          : const Text('Login'),
+                    );
+                  },
+                ),
+              ),
+
+              const SizedBox(height: 50),
+
+              const Column(
+                children: [
+                  Icon(Icons.fingerprint, size: 42, color: AppColors.secondary),
+                  SizedBox(height: 12),
+                  Divider(
+                    thickness: 1.5,
+                    color: AppColors.primary,
+                    indent: 100,
+                    endIndent: 100,
+                  ),
+                  SizedBox(height: 10),
+                  Text(
+                    'Privacy Policy',
+                    style: TextStyle(
+                      color: Color(0xFF808A93),
+                      fontSize: 18,
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );
