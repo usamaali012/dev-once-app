@@ -2,13 +2,13 @@ import 'dart:async';
 
 import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 import 'package:dev_once_app/core/constants/assets.dart';
-import 'package:dev_once_app/core/models/request_config.dart';
-import 'package:dev_once_app/core/services/api/api_client.dart';
+// API logic moved to VM
+import 'package:dev_once_app/features/auth/otp/otp_vm.dart';
+import 'package:dev_once_app/features/auth/otp/otp_model.dart';
 import 'package:dev_once_app/core/theme/app_colors.dart';
 import 'package:dev_once_app/core/widgets/app_snackbar.dart';
-import 'package:dev_once_app/features/auth/forgot_password/forgot_password_model.dart';
-import 'package:dev_once_app/features/auth/forgot_password/forgot_password_vm.dart';
 import 'package:dev_once_app/features/auth/widgets/auth_background.dart';
+import 'package:dev_once_app/features/auth/reset_password/reset_password_vu.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -31,6 +31,37 @@ class _OtpScreenState extends State<OtpScreen> {
   int _seconds = 120;
   bool _resending = false;
   bool _verifying = false;
+
+  String _extractToken(Map<String, dynamic>? data) {
+    if (data == null) return '';
+    // Common top-level keys
+    for (final k in const ['token', 'reset_token', 'key', 'resetToken', 'resetKey']) {
+      final v = data[k];
+      if (v is String && v.isNotEmpty) return v;
+    }
+    // Nested under 'data' or similar
+    for (final k in const ['data', 'result', 'payload']) {
+      final nested = data[k];
+      if (nested is Map<String, dynamic>) {
+        final found = _extractToken(nested);
+        if (found.isNotEmpty) return found;
+      }
+    }
+    // Brute-force scan for any string value under a token-ish key
+    for (final entry in data.entries) {
+      final key = entry.key.toLowerCase();
+      final val = entry.value;
+      if (val is String && val.isNotEmpty &&
+          (key.contains('token') || key.contains('reset') || key == 'key')) {
+        return val;
+      }
+      if (val is Map<String, dynamic>) {
+        final found = _extractToken(val);
+        if (found.isNotEmpty) return found;
+      }
+    }
+    return '';
+  }
 
   @override
   void initState() {
@@ -81,10 +112,8 @@ class _OtpScreenState extends State<OtpScreen> {
   Future<void> _onResend() async {
     if (_resending) return;
     setState(() => _resending = true);
-    final vm = ForgotPasswordVm();
-    final res = await vm.submit(
-      ForgotPasswordRequest(username: widget.username),
-    );
+    final vm = OtpVm();
+    final res = await vm.resendOtp(OtpResendRequest(username: widget.username));
     if (!mounted) return;
     setState(() => _resending = false);
     if (res.success) {
@@ -119,29 +148,43 @@ class _OtpScreenState extends State<OtpScreen> {
     }
 
     setState(() => _verifying = true);
-    final client = ApiClient();
-    final res = await client.post<Map<String, dynamic>>(
-      RequestConfig<Map<String, dynamic>>(
-        endpoint: '/auth/verify-otp',
-        request: {
-          'user_id': widget.userId,
-          'otp_code': code,
-        },
-      ),
+    final vm = OtpVm();
+    final res = await vm.verifyOtp(
+      OtpVerifyRequest(userId: widget.userId, otpCode: code),
     );
     if (!mounted) return;
     setState(() => _verifying = false);
 
     if (res.success) {
-      final token =
-          (res.data?['access_token'] ?? res.data?['token'])?.toString() ?? '';
-      if (token.isNotEmpty) client.setAuthToken(token);
+      final token = _extractToken(res.data);
+      if (token.isEmpty) {
+        showAppSnackBar(
+          context,
+          title: 'Missing Token',
+          message: 'Unable to proceed without reset token.',
+          type: ContentType.warning,
+        );
+        return;
+      }
       showAppSnackBar(
         context,
         title: 'Verified',
         message: 'OTP verified successfully.',
         type: ContentType.success,
       );
+      // Navigate to Reset Password on success
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(
+            builder: (_) => ResetPasswordScreen(
+              userId: widget.userId,
+              username: widget.username,
+              token: token,
+            ),
+          ),
+        );
+      });
     } else {
       showAppSnackBar(
         context,
@@ -268,7 +311,7 @@ class _OtpScreenState extends State<OtpScreen> {
                               AlwaysStoppedAnimation<Color>(Colors.white),
                         ),
                       )
-                    : const Text('Send'),
+                    : const Text('Verify'),
               ),
             ),
           ],
@@ -352,4 +395,3 @@ class _OtpFields extends StatelessWidget {
     );
   }
 }
-
