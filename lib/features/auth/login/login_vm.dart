@@ -1,48 +1,71 @@
-import 'package:flutter/foundation.dart';
 import 'package:dev_once_app/core/models/api_response.dart';
+import 'package:dev_once_app/core/models/base_provider.dart';
 import 'package:dev_once_app/core/models/request_config.dart';
-import 'package:dev_once_app/core/services/api/api_client.dart';
+import 'package:dev_once_app/core/utils/extensions.dart';
+import 'package:dev_once_app/features/auth/login/login_model.dart';
+import 'package:flutter/rendering.dart';
+import 'package:flutter_extensions_pack/flutter_extensions_pack.dart';
 
-import 'login_model.dart';
+class LoginVm extends BaseProvider {
 
-class LoginVm extends ChangeNotifier {
-  final ApiClient _client;
+  String? username;
+  String? password;
+  
+  void onUsernameSaved(String? value) => username = value;
 
-  LoginVm({ApiClient? client}) : _client = client ?? ApiClient();
+  void onPasswordSaved(String? value) => password = value;
 
-  bool _loading = false;
-  bool get loading => _loading;
+    String? onUsernameValidate(String? value) {
+    if (!value.existAndNotEmpty) return 'User ID is required';
+    if (value!.length < 6) return 'Minimum 6 characters';
+    return null;
+  }
 
-  static const String _loginEndpoint = '/auth/customer-login';
+  String? onPasswordValidate(String? value) {
+    if (!value.existAndNotEmpty) return 'Password is required';
+    return null;
+  }
 
-  Future<ApiResponse<LoginResponse>> login({
-    required String username,
-    required String password,
-  }) async {
-    _setLoading(true);
-    try {
-      final req = LoginRequest(username: username, password: password);
-      final res = await _client.post<LoginResponse>(
-        RequestConfig<LoginResponse>(
-          endpoint: _loginEndpoint,
-          request: req.toJson(),
+  Future<({bool success, String? message})> login() async {
+    setBusy(true);
+
+    final request = LoginRequest(username: username!, password: password!);
+
+    final config = RequestConfig<LoginResponse>(
+          endpoint: '/auth/customer-login',
+          request: request.toJson(),
           fromJson: (json) => LoginResponse.fromJson(json),
+          isFormData: true,
+        );
+
+    final response = await client.post(config);
+
+    if(response.success) {
+      final me = await _fetchMe(response.data!.accessToken);
+
+      setBusy(false);
+
+      debugPrint('$me');
+
+      return (success: true, message: null);
+    }
+
+    setBusy(false);
+
+    return (success: false, message: response.message);
+  }
+
+  Future<ApiResponse> _fetchMe(String accessToken) async {
+    final response = await client.post<SessionData>(
+        RequestConfig<SessionData>(
+          endpoint: '/auth/me',
+          request: SessionRequest(accessToken: accessToken).toJson(),
+          fromJson: SessionData.fromJson,
           isFormData: true,
         ),
       );
 
-      if (res.success && (res.data?.accessToken.isNotEmpty == true)) {
-        _client.setAuthToken(res.data!.accessToken);
-      }
-      return res;
-    } finally {
-      _setLoading(false);
-    }
+      return response;
   }
 
-  void _setLoading(bool value) {
-    if (_loading == value) return;
-    _loading = value;
-    notifyListeners();
-  }
 }
