@@ -22,6 +22,7 @@ class AppTextField extends StatefulWidget {
     this.textInputAction,
     this.validator,
     this.onChanged,
+    this.onSaved,
     this.onFieldSubmitted,
     this.autofillHints,
     this.maxLines = 1,
@@ -44,6 +45,7 @@ class AppTextField extends StatefulWidget {
   final TextInputAction? textInputAction;
   final FormFieldValidator<String>? validator;
   final ValueChanged<String>? onChanged;
+  final FormFieldSetter<String>? onSaved;
   final ValueChanged<String>? onFieldSubmitted;
   final Iterable<String>? autofillHints;
   final int? minLines;
@@ -95,7 +97,9 @@ class _AppTextFieldState extends State<AppTextField> {
         keyboardType: widget.keyboardType,
         textInputAction: widget.textInputAction,
         validator: widget.validator,
+        autovalidateMode: AutovalidateMode.onUserInteraction,
         onChanged: widget.onChanged,
+        onSaved: widget.onSaved,
         // inputFormatters: [],
         onFieldSubmitted: widget.onFieldSubmitted,
         obscureText: widget.isPassword ? _obscure : false,
