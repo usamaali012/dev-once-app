@@ -8,18 +8,31 @@ import 'package:dev_once_app/features/auth/login/login_vm.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
+import 'package:provider/provider.dart';
 
-class LoginScreen extends StatefulWidget {
+class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  Widget build(BuildContext context) {
+    // Provide the ViewModel to this subtree
+    return ChangeNotifierProvider(
+      create: (_) => LoginVm(),
+      child: const _LoginView(),
+    );
+  }
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _LoginView extends StatefulWidget {
+  const _LoginView();
+
+  @override
+  State<_LoginView> createState() => _LoginViewState();
+}
+
+class _LoginViewState extends State<_LoginView> {
   final _userCtrl = TextEditingController();
   final _passCtrl = TextEditingController();
-  bool _loading = false;
 
   @override
   void dispose() {
@@ -29,11 +42,11 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Future<void> _onLogin() async {
-    if (_loading) return;
     FocusScope.of(context).unfocus();
 
     final username = _userCtrl.text.trim();
     final password = _passCtrl.text;
+
     if (username.isEmpty || password.isEmpty) {
       showAppSnackBar(
         context,
@@ -44,11 +57,11 @@ class _LoginScreenState extends State<LoginScreen> {
       return;
     }
 
-    setState(() => _loading = true);
-    final vm = LoginVm();
+    final vm = context.read<LoginVm>();
+    if (vm.loading) return;
+
     final res = await vm.login(username: username, password: password);
     if (!mounted) return;
-    setState(() => _loading = false);
 
     if (res.success) {
       showAppSnackBar(
@@ -57,6 +70,8 @@ class _LoginScreenState extends State<LoginScreen> {
         message: 'You are now signed in.',
         type: ContentType.success,
       );
+      // Optionally navigate here after success
+      // Navigator.of(context).pushReplacement(...);
     } else {
       showAppSnackBar(
         context,
@@ -69,6 +84,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final loading = context.watch<LoginVm>().loading;
+
     final doIcon = SvgPicture.asset(
       AppAssets.authDo,
       width: 40,
@@ -113,7 +130,7 @@ class _LoginScreenState extends State<LoginScreen> {
               'Enter your User ID and password to continue',
               textAlign: TextAlign.center,
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: Color(0xFF808A93),
+                    color: const Color(0xFF808A93),
                     fontSize: 12,
                     fontWeight: FontWeight.w500,
                   ),
@@ -164,7 +181,7 @@ class _LoginScreenState extends State<LoginScreen> {
             SizedBox(
               height: 56,
               child: ElevatedButton(
-                onPressed: _loading ? null : _onLogin,
+                onPressed: loading ? null : _onLogin,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.primary,
                   shape: RoundedRectangleBorder(
@@ -175,7 +192,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     fontSize: 16,
                   ),
                 ),
-                child: _loading
+                child: loading
                     ? const SizedBox(
                         width: 22,
                         height: 22,
@@ -188,8 +205,8 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
             ),
             const SizedBox(height: 50),
-            Column(
-              children: const [
+            const Column(
+              children: [
                 Icon(Icons.fingerprint, size: 42, color: AppColors.secondary),
                 SizedBox(height: 12),
                 Divider(
