@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:dev_once_app/core/constants/assets.dart';
 import 'package:dev_once_app/core/theme/app_colors.dart';
 import 'package:dev_once_app/core/utils/snackbar_service.dart';
@@ -24,14 +22,16 @@ class _OtpScreenState extends State<OtpScreen> {
   final List<TextEditingController> _digits =
       List.generate(6, (_) => TextEditingController());
   final List<FocusNode> _nodes = List.generate(6, (_) => FocusNode());
-
-  Timer? _timer;
-  int _seconds = 120;
   
   @override
   void initState() {
     super.initState();
-    _startTimer();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      final vm = context.read<OtpVm>();
+      vm.clearDigits();
+      vm.startTimer();
+    });
   }
 
   @override
@@ -42,21 +42,9 @@ class _OtpScreenState extends State<OtpScreen> {
     for (final n in _nodes) {
       n.dispose();
     }
-    _timer?.cancel();
+    // stop VM timer when leaving screen
+    context.read<OtpVm>().stopTimer();
     super.dispose();
-  }
-
-  void _startTimer() {
-    _timer?.cancel();
-    setState(() => _seconds = 120);
-    _timer = Timer.periodic(const Duration(seconds: 1), (t) {
-      if (_seconds <= 1) {
-        t.cancel();
-        if (mounted) setState(() => _seconds = 0);
-      } else {
-        if (mounted) setState(() => _seconds -= 1);
-      }
-    });
   }
 
   String _formatTime(int totalSeconds) {
@@ -71,7 +59,13 @@ class _OtpScreenState extends State<OtpScreen> {
     } else if (value.isEmpty && idx > 0) {
       _nodes[idx - 1].requestFocus();
     }
-    setState(() {});
+    context.read<OtpVm>().setDigit(idx, value);
+  }
+
+  void _clearInputs() {
+    for (final c in _digits) {
+      if (c.text.isNotEmpty) c.clear();
+    }
   }
 
   Future<void> _onResend() async {
@@ -83,7 +77,7 @@ class _OtpScreenState extends State<OtpScreen> {
 
     final resp = await context.read<OtpVm>().resendOtp(username);
     if (resp.success) {
-      _startTimer();
+      _clearInputs();
       // ignore: use_build_context_synchronously
       SnackbarService.showSuccessSnack(context, 'A new code has been sent.');
     } else {
@@ -93,7 +87,8 @@ class _OtpScreenState extends State<OtpScreen> {
   }
 
   Future<void> _onVerify() async {
-    final code = _digits.map((e) => e.text).join();
+    final vm = context.read<OtpVm>();
+    final code = vm.code;
     if (code.length != 6) {
       SnackbarService.showWarningSnack(context, 'Please enter the 6-digit code.');
       return;
@@ -105,12 +100,19 @@ class _OtpScreenState extends State<OtpScreen> {
       return;
     }
 
-    final resp = await context.read<OtpVm>().verifyOtp(userId: userId!, code: code);
+    final resp = await vm.verifyOtp(userId: userId!, code: code);
 
     if (!mounted) return;
     if (resp.success) {
       SnackbarService.showSuccessSnack(context, 'OTP verified successfully.');
-      context.push(ResetPasswordScreen(userId: 'userId', username: 'username', token: 'token'));
+      final forgotVm = context.read<ForgotPasswordVm>();
+      context.push(
+        ResetPasswordScreen(
+          userId: forgotVm.userId!,
+          username: forgotVm.username!,
+          token: vm.token!,
+        ),
+      );
     } else {
       SnackbarService.showErrorSnack(context, resp.message!);
     }
@@ -158,12 +160,14 @@ class _OtpScreenState extends State<OtpScreen> {
                       ),
                 ),
                 const SizedBox(width: 6),
-                Text(
-                  _formatTime(_seconds),
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: AppColors.primary,
-                        fontWeight: FontWeight.w600,
-                      ),
+                Consumer<OtpVm>(
+                  builder: (context, vm, _) => Text(
+                    _formatTime(vm.secondsLeft),
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          color: AppColors.primary,
+                          fontWeight: FontWeight.w600,
+                        ),
+                  ),
                 ),
               ],
             ),
@@ -174,7 +178,7 @@ class _OtpScreenState extends State<OtpScreen> {
                 child: Consumer<OtpVm>(
                   builder: (context, vm, _) {
                     return ElevatedButton(
-                      onPressed: _seconds == 0 && !vm.isBusy ? _onResend : null,
+                      onPressed: vm.canResend ? _onResend : null,
                       style: ElevatedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(horizontal: 20),
                         backgroundColor: AppColors.primary,
@@ -184,7 +188,7 @@ class _OtpScreenState extends State<OtpScreen> {
                           fontSize: 13,
                         ),
                       ),
-                      child: vm.isBusy
+                      child: vm.isResendBusy
                           ? const SizedBox(
                               width: 18,
                               height: 18,
@@ -205,7 +209,7 @@ class _OtpScreenState extends State<OtpScreen> {
               child: Consumer<OtpVm>(
                 builder: (context, vm, _) {
                   return ElevatedButton(
-                    onPressed: vm.isBusy ? null : _onVerify,
+                    onPressed: vm.canVerify ? _onVerify : null,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.primary,
                       shape: RoundedRectangleBorder(
