@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import '../theme/app_colors.dart';
@@ -8,6 +9,7 @@ class AppTextField extends StatefulWidget {
     super.key,
     this.controller,
     this.focusNode,
+    this.initialValue,
     this.label,
     this.placeholder,
     this.labelColor = Colors.black,
@@ -25,12 +27,14 @@ class AppTextField extends StatefulWidget {
     this.onSaved,
     this.onFieldSubmitted,
     this.autofillHints,
+    this.inputFormatters,
     this.maxLines = 1,
     this.minLines,
   });
 
   final TextEditingController? controller;
   final FocusNode? focusNode;
+  final String? initialValue;
   final String? label;
   final String? placeholder;
   final Color labelColor;
@@ -48,6 +52,7 @@ class AppTextField extends StatefulWidget {
   final FormFieldSetter<String>? onSaved;
   final ValueChanged<String>? onFieldSubmitted;
   final Iterable<String>? autofillHints;
+  final List<TextInputFormatter>? inputFormatters;
   final int? minLines;
   final int maxLines;
 
@@ -94,6 +99,7 @@ class _AppTextFieldState extends State<AppTextField> {
       TextFormField(
         controller: widget.controller,
         focusNode: widget.focusNode,
+        initialValue: widget.initialValue,
         enabled: widget.enabled,
         readOnly: widget.readOnly,
         autofillHints: widget.autofillHints,
@@ -103,7 +109,7 @@ class _AppTextFieldState extends State<AppTextField> {
         autovalidateMode: AutovalidateMode.onUserInteraction,
         onChanged: widget.onChanged,
         onSaved: widget.onSaved,
-        // inputFormatters: [],
+        inputFormatters: widget.inputFormatters,
         onFieldSubmitted: widget.onFieldSubmitted,
         obscureText: widget.isPassword ? _obscure : false,
         minLines: widget.minLines,

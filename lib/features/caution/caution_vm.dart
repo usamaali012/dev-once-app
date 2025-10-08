@@ -1,10 +1,15 @@
 import 'package:dev_once_app/core/models/base_provider.dart';
+import 'package:dev_once_app/core/models/request_config.dart';
+import 'package:dev_once_app/features/caution/caution_model.dart';
+import 'package:dev_once_app/core/utils/extensions.dart';
+
 
 class CautionVm extends BaseProvider {
   // 0 = Father, 1 = Husband
   int nameType = 0;
 
-  String? guardianName;
+  String? fatherName;
+  String? husbandName;
   String? mobile;
   String? cnic;
   String? address;
@@ -22,7 +27,15 @@ class CautionVm extends BaseProvider {
     notifyListeners();
   }
 
-  void onGuardianSaved(String? v) => guardianName = v?.trim();
+  void onGuardianSaved(String? v) {
+    final guardianName = v?.trim();
+
+    if (nameType == 0) {
+      fatherName = guardianName;
+    } else {
+      husbandName = guardianName;
+    }
+  }
   void onMobileSaved(String? v) => mobile = v?.trim();
   void onCnicSaved(String? v) => cnic = v?.trim();
   void onAddressSaved(String? v) => address = v?.trim();
@@ -49,12 +62,34 @@ class CautionVm extends BaseProvider {
   String? onNokCnicValidate(String? v) => req(v, label: 'Next of Kin CNIC');
   String? onRelationValidate(String? v) => v == null || v.isEmpty ? 'Relation is required' : null;
 
-  Future<({bool success, String? message})> submit() async {
-    // No API for now; mimic busy state so the UI pattern matches others
+  Future<({bool success, String? message})> update() async {
     setBusy(true);
-    await Future<void>.delayed(const Duration(milliseconds: 50));
+
+    final request = MandatoryInfo(
+      fatherName: fatherName, 
+      husbandName: husbandName,
+      mobile: mobile!,
+      cnic: cnic!,
+      address: address!,
+      nokName: nokName!,
+      nokPhone: nokMobile!,
+      nokCnic: nokCnic!,
+      nokRelation: relation!,
+    );
+
+    final config = RequestConfig<Map<String, dynamic>>(
+      endpoint: '/auth/update-mandatory-info',
+      request: request.toJson(),
+    );
+
+    final response = await client.patch(config);
+
     setBusy(false);
-    return (success: true, message: null);
+    if(response.success) {
+      return (success: true, message: null);
+    } else {
+      return (success: false, message: response.message);
+    }
   }
 }
 

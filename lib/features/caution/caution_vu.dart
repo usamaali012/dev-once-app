@@ -33,14 +33,14 @@ class _CautionScreenState extends State<CautionScreen> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Text(
-                'Enter the details below to open the dashboard.',
+                'Enter the details below to open \nthe dashboard.',
                 textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                   color: const Color(0xFF808A93),
                   fontWeight: FontWeight.w500,
                 ),
               ),
-              const SizedBox(height: 24),
+              const SizedBox(height: 40),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -87,6 +87,7 @@ class _CautionScreenState extends State<CautionScreen> {
                     keyboardType: TextInputType.number,
                     onSaved: context.read<CautionVm>().onCnicSaved,
                     validator: context.read<CautionVm>().onCnicValidate,
+                    // inputFormatters: ''
                   ),
                   const SizedBox(height: 16),
                   
@@ -162,7 +163,7 @@ class _CautionScreenState extends State<CautionScreen> {
                     onPressed: vm.isBusy ? null : () async {
                       if (!(_formKey.currentState?.validate() ?? false)) return;
                       _formKey.currentState!.save();
-                      await vm.submit();
+                      await vm.update();
                       // Next step can be handled later
                     },
                     style: ElevatedButton.styleFrom(
