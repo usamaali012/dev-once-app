@@ -105,14 +105,7 @@ class _OtpScreenState extends State<OtpScreen> {
     if (!mounted) return;
     if (resp.success) {
       SnackbarService.showSuccessSnack(context, 'OTP verified successfully.');
-      final forgotVm = context.read<ForgotPasswordVm>();
-      context.push(
-        ResetPasswordScreen(
-          userId: forgotVm.userId!,
-          username: forgotVm.username!,
-          token: vm.token!,
-        ),
-      );
+      context.push(ResetPasswordScreen());
     } else {
       SnackbarService.showErrorSnack(context, resp.message!);
     }

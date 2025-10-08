@@ -16,7 +16,7 @@ class OtpVerifyResponse {
   const OtpVerifyResponse({required this.token});
 
   factory OtpVerifyResponse.fromJson(Map<String, dynamic> json) => OtpVerifyResponse(
-    token: json['user_id'],
+    token: json['token'],
   );
 
   Map<String, dynamic> toJson() => {
