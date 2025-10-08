@@ -21,12 +21,12 @@ class LoginResponse {
   const LoginResponse({required this.accessToken});
 
   factory LoginResponse.fromJson(Map<String, dynamic> json) => LoginResponse(
-        accessToken: json['access_token'] as String? ?? '',
-      );
+    accessToken: json['access_token'],
+  );
 
   Map<String, dynamic> toJson() => {
-        'access_token': accessToken,
-      };
+    'access_token': accessToken,
+  };
 }
 
 // Request body for /auth/me
