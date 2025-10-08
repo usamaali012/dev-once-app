@@ -15,7 +15,7 @@ class LoginVm extends BaseProvider {
 
   void onPasswordSaved(String? value) => password = value;
 
-    String? onUsernameValidate(String? value) {
+  String? onUsernameValidate(String? value) {
     if (!value.existAndNotEmpty) return 'User ID is required';
     if (value!.length < 6) return 'Minimum 6 characters';
     return null;
@@ -29,43 +29,46 @@ class LoginVm extends BaseProvider {
   Future<({bool success, String? message})> login() async {
     setBusy(true);
 
-    final request = LoginRequest(username: username!, password: password!);
+    final request = LoginRequest(username: username!.trim(), password: password!);
 
     final config = RequestConfig<LoginResponse>(
-          endpoint: '/auth/customer-login',
-          request: request.toJson(),
-          fromJson: (json) => LoginResponse.fromJson(json),
-          isFormData: true,
-        );
+      endpoint: '/auth/customer-login',
+      request: request.toJson(),
+      fromJson: LoginResponse.fromJson,
+      isFormData: true,
+    );
 
-    final response = await client.post(config);
+    ApiResponse response = await client.post(config);
 
     if(response.success) {
-      final me = await _fetchMe(response.data!.accessToken);
-
+      final resp = await _fetchMe(response.data!.accessToken);
       setBusy(false);
 
-      debugPrint('$me');
+      if(!resp.success) {
+        return (success: false, message: 'Error fetching user info');
+      }
+      debugPrint('$resp');
+      final data = resp.data as SessionData;
 
-      return (success: true, message: null);
+      var message = 'dashboard';
+      if (data.mandatoryInfo) { message = 'caution'; }
+
+      return (success: true, message: message);
     }
 
     setBusy(false);
-
     return (success: false, message: response.message);
   }
 
   Future<ApiResponse> _fetchMe(String accessToken) async {
     final response = await client.post<SessionData>(
-        RequestConfig<SessionData>(
-          endpoint: '/auth/me',
-          request: SessionRequest(accessToken: accessToken).toJson(),
-          fromJson: SessionData.fromJson,
-          isFormData: true,
-        ),
-      );
-
-      return response;
+      RequestConfig<SessionData>(
+        endpoint: '/auth/me',
+        request: SessionRequest(accessToken: accessToken).toJson(),
+        fromJson: SessionData.fromJson,
+      ),
+    );
+    return response;
   }
 
 }
