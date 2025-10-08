@@ -80,7 +80,7 @@ class ApiResponseProvider<T> {
         final field = detail['field'];
         final message = detail['message'];
         if (field != null && message != null) {
-          return '$field: $message';
+          return '$message';
         }
         return '$detail';
       }
