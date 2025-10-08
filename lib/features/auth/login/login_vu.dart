@@ -6,6 +6,7 @@ import 'package:dev_once_app/features/auth/forgot_password/forgot_password_vu.da
 import 'package:dev_once_app/features/auth/login/login_vm.dart';
 import 'package:dev_once_app/features/auth/widgets/auth_background.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_extensions_pack/flutter_extensions_pack.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 
@@ -33,9 +34,6 @@ class _LoginVuState extends State<LoginVu> {
         overlapGraphic: mobileIcon,
         child: Form(
           key: _formKey,
-          // Keep the whole form from autovalidating everything up front.
-          // We control visibility via touched + submitted flags.
-          // autovalidateMode: AutovalidateMode.disabled,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
@@ -52,23 +50,17 @@ class _LoginVuState extends State<LoginVu> {
 
               // USERNAME (required; validate after touch or submit)
               AppTextField(
-                // controller: _userCtrl,
                 placeholder: 'User ID',
                 prefixSvg: AppAssets.user,
                 textInputAction: TextInputAction.next,
-                // focusNode: _userFocus,
                 onSaved: context.read<LoginVm>().onUsernameSaved,
                 validator: context.read<LoginVm>().onUsernameValidate,
-                // onChanged: (_) {
-                //   if (!_userTouched) setState(() => _userTouched = true);
-                // },
               ),
 
               const SizedBox(height: 40),
 
               // PASSWORD (required; validate after touch or submit)
               AppTextField(
-                // controller: _passCtrl,
                 placeholder: 'Password',
                 prefixSvg: AppAssets.lock,
                 isPassword: true,
@@ -76,11 +68,6 @@ class _LoginVuState extends State<LoginVu> {
                 onFieldSubmitted: (_) => _onLogin(),
                 onSaved: context.read<LoginVm>().onPasswordSaved,
                 validator: context.read<LoginVm>().onPasswordValidate,
-                // focusNode: _passFocus,
-                // validator: _validatePass,
-                // onChanged: (_) {
-                //   if (!_passTouched) setState(() => _passTouched = true);
-                // },
               ),
 
               const SizedBox(height: 20),
@@ -88,12 +75,8 @@ class _LoginVuState extends State<LoginVu> {
               Align(
                 alignment: Alignment.centerRight,
                 child: TextButton(
-                  onPressed: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) => const ForgotPasswordScreen(),
-                      ),
-                    );
+                  onPressed: () { 
+                    context.push(ForgotPasswordScreen());
                   },
                   style: TextButton.styleFrom(
                     padding: EdgeInsets.zero,
@@ -103,10 +86,10 @@ class _LoginVuState extends State<LoginVu> {
                   child: Text(
                     'Forgot password?',
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          color: Colors.black,
-                          fontSize: 12,
-                          fontWeight: FontWeight.w400,
-                        ),
+                      color: Colors.black,
+                      fontSize: 12,
+                      fontWeight: FontWeight.w400,
+                    ),
                   ),
                 ),
               ),
@@ -130,15 +113,15 @@ class _LoginVuState extends State<LoginVu> {
                         ),
                       ),
                       child: vm.isBusy
-                          ? const SizedBox(
-                              width: 22,
-                              height: 22,
-                              child: CircularProgressIndicator(
-                                strokeWidth: 2.4,
-                                valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                              ),
-                            )
-                          : const Text('Login'),
+                        ? const SizedBox(
+                            width: 22,
+                            height: 22,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2.4,
+                              valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                            ),
+                          )
+                        : const Text('Login'),
                     );
                   },
                 ),
