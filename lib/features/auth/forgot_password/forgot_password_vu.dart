@@ -141,11 +141,10 @@ class _ForgotPasswordVuState extends State<ForgotPasswordVu> {
 
     if (resp.success) {
       // ignore: use_build_context_synchronously
-      context.push(OtpScreen(userId: 'userId', username: 'username'));
+      context.push(const OtpScreen());
     } else {
       // ignore: use_build_context_synchronously
       SnackbarService.showErrorSnack(context, resp.message!);
     }
   }
 }
-
