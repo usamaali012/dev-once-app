@@ -3,7 +3,7 @@ import 'package:dev_once_app/core/models/base_provider.dart';
 import 'package:dev_once_app/core/models/request_config.dart';
 import 'package:dev_once_app/core/utils/extensions.dart';
 import 'package:dev_once_app/features/auth/login/login_model.dart';
-import 'package:flutter/rendering.dart';
+// import 'package:flutter/rendering.dart';
 import 'package:flutter_extensions_pack/flutter_extensions_pack.dart';
 
 class LoginVm extends BaseProvider {
@@ -47,7 +47,6 @@ class LoginVm extends BaseProvider {
       if(!resp.success) {
         return (success: false, message: 'Error fetching user info');
       }
-      debugPrint('$resp');
       final data = resp.data as SessionData;
 
       var message = 'dashboard';
