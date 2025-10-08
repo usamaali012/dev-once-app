@@ -32,7 +32,7 @@ abstract class SnackbarService {
   static ScaffoldFeatureController showErrorSnack(BuildContext context, String message) {
     return _buildSnackBar(
       context: context,
-      title: 'Oops!',
+      title: 'Error',
       message: message,
       contentType: ContentType.failure,
     );
