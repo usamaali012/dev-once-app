@@ -1,92 +1,27 @@
 import 'package:dev_once_app/core/constants/assets.dart';
 import 'package:dev_once_app/core/theme/app_colors.dart';
-import 'package:dev_once_app/core/widgets/app_snackbar.dart';
+import 'package:dev_once_app/core/utils/snackbar_service.dart';
 import 'package:dev_once_app/core/widgets/app_text_field.dart';
-import 'package:dev_once_app/features/auth/forgot_password/forgot_password_model.dart';
 import 'package:dev_once_app/features/auth/forgot_password/forgot_password_vm.dart';
 import 'package:dev_once_app/features/auth/otp/otp_vu.dart';
 import 'package:dev_once_app/features/auth/widgets/auth_background.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_extensions_pack/flutter_extensions_pack.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
+import 'package:provider/provider.dart';
 
-class ForgotPasswordScreen extends StatefulWidget {
-  const ForgotPasswordScreen({super.key});
+class ForgotPasswordVu extends StatefulWidget {
+  const ForgotPasswordVu({super.key});
 
   @override
-  State<ForgotPasswordScreen> createState() => _ForgotPasswordScreenState();
+  State<ForgotPasswordVu> createState() => _ForgotPasswordVuState();
 }
 
-class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
-  final _userCtrl = TextEditingController();
-  bool _loading = false;
-
-  @override
-  void dispose() {
-    _userCtrl.dispose();
-    super.dispose();
-  }
-
-  Future<void> _onSend() async {
-    if (_loading) return;
-    final username = _userCtrl.text.trim();
-    if (username.isEmpty) {
-      showAppSnackBar(
-        context,
-        title: 'Missing info',
-        message: 'Please enter your User ID.',
-        type: ContentType.warning,
-      );
-      return;
-    }
-
-    setState(() => _loading = true);
-    final vm = ForgotPasswordVm();
-    final res = await vm.submit(ForgotPasswordRequest(username: username));
-    if (!mounted) return;
-    setState(() => _loading = false);
-    if (res.success) {
-      final userId = (res.data?['user_id'] ?? res.data?['userId'])?.toString() ?? '';
-      if (userId.isEmpty) {
-        showAppSnackBar(
-          context,
-          title: 'Missing user id',
-          message: 'Unable to proceed. Please try again.',
-          type: ContentType.warning,
-        );
-        return;
-      }
-
-      context.push(OtpScreen(userId: userId, username: username));
-      Navigator.of(context).push(
-        MaterialPageRoute(builder: (_) => OtpScreen(userId: userId, username: username)),
-      );
-    } else {
-      showAppSnackBar(
-        context,
-        title: 'Request Failed',
-        message: res.message ?? 'Unable to send OTP. Try again.',
-        type: ContentType.failure,
-      );
-    }
-  }
+class _ForgotPasswordVuState extends State<ForgotPasswordVu> {
+  final _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
-    final doIcon = SvgPicture.asset(
-      AppAssets.authDo,
-      width: 40,
-      height: 40,
-      fit: BoxFit.contain,
-      colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcIn),
-    );
-
-    final roundedTopRight = SvgPicture.asset(
-      AppAssets.authRoundedShapesVertical,
-      fit: BoxFit.contain,
-    );
-
     return Scaffold(
       body: AuthBackground(
         title: 'Forgot\nPassword',
@@ -96,87 +31,121 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
         leading: doIcon,
         topRightDecoration: roundedTopRight,
         overlapGraphic: null,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            const SizedBox(height: 35),
-            Text(
-              'Enter User ID to reset your password',
-              textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: const Color(0xFF808A93),
-                    fontWeight: FontWeight.w500,
-                  ),
-            ),
-            const SizedBox(height: 55),
-            AppTextField(
-              controller: _userCtrl,
-              placeholder: 'User ID',
-              prefixSvg: AppAssets.user,
-              textInputAction: TextInputAction.done,
-              autofillHints: const [AutofillHints.username],
-              onFieldSubmitted: (_) => _onSend(),
-            ),
-            const SizedBox(height: 45),
-            Row(
-              children: [
-                Expanded(
-                  child: SizedBox(
-                    height: 56,
-                    child: OutlinedButton(
-                      onPressed: context.pop,
-                      style: OutlinedButton.styleFrom(
-                        side: const BorderSide(color: Color(0xFFD6D6D6)),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(16),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              const SizedBox(height: 35),
+              Text(
+                'Enter User ID to reset your password',
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: const Color(0xFF808A93),
+                      fontWeight: FontWeight.w500,
+                    ),
+              ),
+              const SizedBox(height: 55),
+              AppTextField(
+                placeholder: 'User ID',
+                prefixSvg: AppAssets.user,
+                textInputAction: TextInputAction.done,
+                autofillHints: const [AutofillHints.username],
+                onFieldSubmitted: (_) => _onSend(),
+                onSaved: context.read<ForgotPasswordVm>().onUsernameSaved,
+                validator: context.read<ForgotPasswordVm>().onUsernameValidate,
+              ),
+              const SizedBox(height: 45),
+              Row(
+                children: [
+                  Expanded(
+                    child: SizedBox(
+                      height: 56,
+                      child: OutlinedButton(
+                        onPressed: context.pop,
+                        style: OutlinedButton.styleFrom(
+                          side: const BorderSide(color: Color(0xFFD6D6D6)),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                          foregroundColor: AppColors.grey,
+                          textStyle: const TextStyle(
+                            fontWeight: FontWeight.w700,
+                            fontSize: 16,
+                          ),
                         ),
-                        foregroundColor: AppColors.grey,
-                        textStyle: const TextStyle(
-                          fontWeight: FontWeight.w700,
-                          fontSize: 16,
-                        ),
+                        child: const Text('Back'),
                       ),
-                      child: const Text('Back'),
                     ),
                   ),
-                ),
-                const SizedBox(width: 16),
-                Expanded(
-                  child: SizedBox(
-                    height: 56,
-                    child: ElevatedButton(
-                      onPressed: _loading ? null : _onSend,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.primary,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(16),
-                        ),
-                        textStyle: const TextStyle(
-                          fontWeight: FontWeight.w700,
-                          fontSize: 16,
-                        ),
-                      ),
-                      child: _loading
-                          ? const SizedBox(
-                              width: 22,
-                              height: 22,
-                              child: CircularProgressIndicator(
-                                strokeWidth: 2.4,
-                                valueColor:
-                                    AlwaysStoppedAnimation<Color>(Colors.white),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: SizedBox(
+                      height: 56,
+                      child: Consumer<ForgotPasswordVm>(
+                        builder: (context, vm, _) {
+                          return ElevatedButton(
+                            onPressed: vm.isBusy ? null : _onSend,
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: AppColors.primary,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(16),
                               ),
-                            )
-                          : const Text('Send'),
+                              textStyle: const TextStyle(
+                                fontWeight: FontWeight.w700,
+                                fontSize: 16,
+                              ),
+                            ),
+                            child: vm.isBusy
+                                ? const SizedBox(
+                                    width: 22,
+                                    height: 22,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2.4,
+                                      valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                                    ),
+                                  )
+                                : const Text('Send'),
+                          );
+                        },
+                      ),
                     ),
                   ),
-                ),
-              ],
-            ),
-          ],
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
-}
 
+  final doIcon = SvgPicture.asset(
+      AppAssets.authDo,
+      width: 40,
+      height: 40,
+      fit: BoxFit.contain,
+      colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcIn),
+    );
+
+  final roundedTopRight = SvgPicture.asset(
+    AppAssets.authRoundedShapesVertical,
+    fit: BoxFit.contain,
+  );
+
+  Future<void> _onSend() async {
+    if (!(_formKey.currentState?.validate() ?? false)) return;
+    _formKey.currentState!.save();
+
+    final resp = await context.read<ForgotPasswordVm>().submit();
+
+    if (resp.success) {
+      // ignore: use_build_context_synchronously
+      context.push(OtpScreen(userId: 'userId', username: 'username'));
+    } else {
+      // ignore: use_build_context_synchronously
+      SnackbarService.showErrorSnack(context, resp.message!);
+    }
+  }
+}
 

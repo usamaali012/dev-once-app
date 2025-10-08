@@ -1,25 +1,42 @@
-import 'package:dev_once_app/core/models/api_response.dart';
+import 'package:dev_once_app/core/models/base_provider.dart';
 import 'package:dev_once_app/core/models/request_config.dart';
-import 'package:dev_once_app/core/services/api/api_client.dart';
+import 'package:dev_once_app/core/utils/extensions.dart';
 
 import 'forgot_password_model.dart';
 
-class ForgotPasswordVm {
-  final ApiClient _client;
+class ForgotPasswordVm extends BaseProvider {
+  String? username;
+  String? userId;
 
-  ForgotPasswordVm({ApiClient? client}) : _client = client ?? ApiClient();
+  void onUsernameSaved(String? value) => username = value;
 
-  static const String _endpoint = '/auth/forgot-password';
+  String? onUsernameValidate(String? value) {
+    if (value == null || value.trim().isEmpty) return 'User ID is required';
+    if (value.trim().length < 6) return 'Minimum 6 characters';
+    return null;
+  }
 
-  Future<ApiResponse<Map<String, dynamic>>> submit(
-      ForgotPasswordRequest request) async {
-    final res = await _client.post(
-      RequestConfig<Map<String, dynamic>>(
-        endpoint: _endpoint,
+  Future<({bool success, String? message})> submit() async {
+    setBusy(true);
+
+    final request = ForgotPasswordRequest(username: username!.trim());
+
+    final res = await client.post<ForgotPasswordResponse>(
+      RequestConfig<ForgotPasswordResponse>(
+        endpoint: '/auth/forgot-password',
         request: request.toJson(),
+        fromJson: ForgotPasswordResponse.fromJson
       ),
     );
 
-    return res;
+    if (res.success) {
+      userId = res.data!.userId;
+      setBusy(false);
+      
+      return (success: true, message: null);
+    }
+
+    setBusy(false);
+    return (success: false, message: res.message);
   }
 }
