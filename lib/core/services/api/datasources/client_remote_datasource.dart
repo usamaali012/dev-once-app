@@ -29,12 +29,15 @@ class ClientRemoteDatasource {
 
   Future<ApiResponse<T>> post<T>(RequestConfig config) async {
     final url = Uri.parse('${_config.baseUrl}${config.endpoint}');
-    dynamic body = jsonEncode(config.request);
     var headers = _config.headers;
 
+    dynamic body;
     if (config.isFormData) {
       body = config.request;
       headers['Content-Type'] = 'application/x-www-form-urlencoded';
+    } else {
+      body = jsonEncode(config.request);
+      headers['Content-Type'] = 'application/json';
     }
 
     final response = ApiResponseProvider<T>(
@@ -55,12 +58,15 @@ class ClientRemoteDatasource {
 
   Future<ApiResponse<T>> patch<T>(RequestConfig config) async {
     final url = Uri.parse('${_config.baseUrl}${config.endpoint}');
-    dynamic body = jsonEncode(config.request);
     var headers = _config.headers;
-
+  
+    dynamic body;
     if (config.isFormData) {
       body = config.request;
       headers['Content-Type'] = 'application/x-www-form-urlencoded';
+    } else {
+      body = jsonEncode(config.request);
+      headers['Content-Type'] = 'application/json';
     }
 
     final response = ApiResponseProvider<T>(
