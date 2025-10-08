@@ -109,6 +109,6 @@ class ApiResponseProvider<T> {
       }
       if (detail is String) return detail;
     }
-    return '$body';
+    return 'Error while fetching response.';
   }
 }
