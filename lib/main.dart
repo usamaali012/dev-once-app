@@ -1,5 +1,6 @@
 import 'package:dev_once_app/features/auth/forgot_password/forgot_password_vm.dart';
 import 'package:dev_once_app/features/auth/otp/otp_vm.dart';
+import 'package:dev_once_app/features/caution/caution_vm.dart';
 import 'package:dev_once_app/features/auth/reset_password/reset_password_vm.dart';
 import 'package:dev_once_app/features/auth/login/login_vm.dart';
 import 'package:flutter/material.dart';
@@ -25,6 +26,7 @@ class DevOnceApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => LoginVm()),
         ChangeNotifierProvider(create: (_) => ForgotPasswordVm()),
         ChangeNotifierProvider(create: (_) => OtpVm()),
+        ChangeNotifierProvider(create: (_) => CautionVm()),
         ChangeNotifierProvider(create: (_) => ResetPasswordVm()),
       ],
       child: MaterialApp(

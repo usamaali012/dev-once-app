@@ -10,7 +10,7 @@ class AppTextField extends StatefulWidget {
     this.focusNode,
     this.label,
     this.placeholder,
-    this.labelColor = AppColors.grey,
+    this.labelColor = Colors.black,
     this.fillColor = const Color(0xFFF3F3F3),
     this.prefixSvg,
     this.suffixSvg,
@@ -76,13 +76,16 @@ class _AppTextFieldState extends State<AppTextField> {
     if (widget.label?.isNotEmpty ?? false) {
       children
         ..add(
-          Text(
-            widget.label!,
-            style: TextStyle(
-              color: widget.labelColor,
-              fontWeight: FontWeight.w500,
+          Padding(
+            padding: const EdgeInsets.only(left: 14),
+            child: Text(
+              widget.label!,
+              style: TextStyle(
+                color: widget.labelColor,
+                fontWeight: FontWeight.w500,
+              ),
             ),
-          ),
+          )
         )
         ..add(const SizedBox(height: 8));
     }
