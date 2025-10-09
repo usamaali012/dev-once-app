@@ -1,6 +1,7 @@
 import 'package:dev_once_app/core/constants/assets.dart';
 import 'package:dev_once_app/core/theme/app_colors.dart';
 import 'package:dev_once_app/core/utils/snackbar_service.dart';
+import 'package:dev_once_app/core/widgets/app_loading.dart';
 import 'package:dev_once_app/core/widgets/app_text_field.dart';
 import 'package:dev_once_app/features/auth/widgets/auth_background.dart';
 import 'package:dev_once_app/features/auth/reset_password/reset_password_vm.dart';
@@ -103,16 +104,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                         fontSize: 16,
                       ),
                     ),
-                    child: vm.isBusy
-                        ? const SizedBox(
-                            width: 22,
-                            height: 22,
-                            child: CircularProgressIndicator(
-                              strokeWidth: 2.4,
-                              valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                            ),
-                          )
-                        : const Text('Reset'),
+                    child: vm.isBusy ? LoadingWidget(): const Text('Reset'),
                   );
                 },
               ),

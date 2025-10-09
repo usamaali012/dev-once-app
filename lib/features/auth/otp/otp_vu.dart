@@ -1,6 +1,7 @@
 import 'package:dev_once_app/core/constants/assets.dart';
 import 'package:dev_once_app/core/theme/app_colors.dart';
 import 'package:dev_once_app/core/utils/snackbar_service.dart';
+import 'package:dev_once_app/core/widgets/app_loading.dart';
 import 'package:dev_once_app/features/auth/forgot_password/forgot_password_vm.dart';
 import 'package:dev_once_app/features/auth/otp/otp_vm.dart';
 import 'package:dev_once_app/features/auth/widgets/auth_background.dart';
@@ -213,16 +214,7 @@ class _OtpScreenState extends State<OtpScreen> {
                         fontSize: 16,
                       ),
                     ),
-                    child: vm.isBusy
-                        ? const SizedBox(
-                            width: 22,
-                            height: 22,
-                            child: CircularProgressIndicator(
-                              strokeWidth: 2.4,
-                              valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                            ),
-                          )
-                        : const Text('Verify'),
+                    child: vm.isBusy ? LoadingWidget() : const Text('Verify'),
                   );
                 },
               ),
