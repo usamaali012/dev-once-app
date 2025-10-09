@@ -1,6 +1,7 @@
 import 'package:dev_once_app/core/constants/relationships.dart';
 import 'package:dev_once_app/core/utils/app_validators.dart';
 import 'package:dev_once_app/core/utils/snackbar_service.dart';
+import 'package:dev_once_app/core/widgets/app_image_picker.dart';
 import 'package:dev_once_app/core/widgets/app_loading.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -40,7 +41,7 @@ class _UpdateProfileVuState extends State<UpdateProfileVu> {
         topCornerRadius: 30,
         leading: doIcon,
         topRightDecoration: roundedTopRight,
-        overlapGraphic: avatarIcon,
+        overlapGraphic: ImageWidget(size: 40, url: vm.details.profileImageCompleteUrl),
         child: vm.isLoading
           ? Center(child: LoadingWidget(size: 30, color: AppColors.primary))
           : Form(
@@ -197,8 +198,4 @@ final roundedBottomLeft = Transform.rotate(
   ),
 );
 
-final avatarIcon = SvgPicture.asset(
-  AppAssets.mobileIcon,
-  fit: BoxFit.contain,
-);
 

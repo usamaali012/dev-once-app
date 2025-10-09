@@ -14,6 +14,8 @@ class UpdateProfileVm extends BaseProvider {
   String? nokMobile;
   String? nokCnic;
   String? relation;
+  String? profileImageUrl;
+  String? profileImageCompleteUrl;
 
   bool isLoading = false;
   void setLoading(bool value) { isLoading = value; notifyListeners(); }
@@ -74,6 +76,7 @@ class UpdateProfileVm extends BaseProvider {
         nokPhone: nokMobile,
         nokCnic: nokCnic,
         nokRelation: relation,
+        profileImageUrl: profileImageUrl 
       );
       final cfg = RequestConfig(
         endpoint: '/user/update-profile',

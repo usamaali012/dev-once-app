@@ -6,6 +6,8 @@ class ProfileDetails {
   final String? nokPhone;
   final String? nokCnic;
   final String? nokRelation;
+  final String? profileImageUrl;
+  final String? profileImageCompleteUrl;
 
   const ProfileDetails({
     this.email,
@@ -15,6 +17,8 @@ class ProfileDetails {
     this.nokPhone,
     this.nokCnic,
     this.nokRelation,
+    this.profileImageUrl,
+    this.profileImageCompleteUrl,
   });
 
   factory ProfileDetails.fromJson(Map<String, dynamic> json) => ProfileDetails(
@@ -25,6 +29,8 @@ class ProfileDetails {
         nokPhone: json['next_of_kin_phone'],
         nokCnic: json['next_of_kin_cnic'],
         nokRelation: json['next_of_kin_relation'],
+        profileImageUrl: json['profile_image_url'],
+        profileImageCompleteUrl: json['profile_image_complete_url'],
       );
 
   Map<String, dynamic> toJson() => {
@@ -35,6 +41,8 @@ class ProfileDetails {
         'next_of_kin_phone': nokPhone,
         'next_of_kin_cnic': nokCnic,
         'next_of_kin_relation': nokRelation,
+        'profile_image_url': profileImageUrl,
+        'profile_image_complete_url': profileImageCompleteUrl,
       };
 }
 
