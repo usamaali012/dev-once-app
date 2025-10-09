@@ -1,7 +1,8 @@
 import 'package:dev_once_app/core/utils/app_validators.dart';
 import 'package:dev_once_app/core/utils/snackbar_service.dart';
+import 'package:dev_once_app/core/widgets/app_loading.dart';
+import 'package:dev_once_app/features/caution/caution_model.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:dev_once_app/core/constants/assets.dart';
 import 'package:dev_once_app/core/theme/app_colors.dart';
@@ -21,7 +22,15 @@ class _CautionScreenState extends State<CautionScreen> {
   final _formKey = GlobalKey<FormState>();
 
   @override
+  void initState() {
+    super.initState();
+    context.read<CautionVm>().get();   
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final vm = context.read<CautionVm>();
+    MandatoryInfo initialData = vm.data;
     return Scaffold(
       body: AuthBackground(
         title: 'Caution',
@@ -30,175 +39,183 @@ class _CautionScreenState extends State<CautionScreen> {
         leading: doIcon,
         topRightDecoration: roundedTopRight,
         overlapGraphic: mobileIcon,
-        child: Form(
-          key: _formKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Text(
-                'Enter the details below to open \nthe dashboard.',
-                textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: const Color(0xFF808A93),
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-              const SizedBox(height: 40),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Selector<CautionVm, int>(
-                    selector: (_, vm) => vm.guardianType,
-                    builder: (context, guardianType, _) {
-                      final onChanged = context.read<CautionVm>().onGuardianTypeChanged; // handler doesn't trigger rebuilds
-                      return Row(
-                        children: [
-                          Expanded(
-                            child: _CompactRadio<int>(
-                              label: 'Father Name',
-                              value: 0,
-                              groupValue: guardianType,      // ← comes from Selector (listens)
-                              onChanged: onChanged,
-                            ),
-                          ),
-                          const SizedBox(width: 6),
-                          Expanded(
-                            child: _CompactRadio<int>(
-                              label: 'Husband Name',
-                              value: 1,
-                              groupValue: guardianType,
-                              onChanged: onChanged,
-                            ),
-                          ),
-                        ],
-                      );
-                    },
-                  ),
-                  const SizedBox(height: 8),
-                  
-                  AppTextField(
-                    placeholder: context.read<CautionVm>().guardianLabel,
-                    onSaved: context.read<CautionVm>().onGuardianSaved,
-                    validator: context.read<CautionVm>().onGuardianValidate,
-                    inputFormatters: [onlyAlphabetsFormatter],
-                  ),
-                  const SizedBox(height: 16),
-                  
-                  AppTextField(
-                    label: 'Mobile No.*',
-                    keyboardType: TextInputType.phone,
-                    onSaved: context.read<CautionVm>().onMobileSaved,
-                    validator: context.read<CautionVm>().onMobileValidate,
-                    inputFormatters: [mobileNumberFormatter],
-                  ),
-                  const SizedBox(height: 16),
-                  
-                  AppTextField(
-                    label: 'CNIC.*',
-                    keyboardType: TextInputType.number,
-                    onSaved: context.read<CautionVm>().onCnicSaved,
-                    validator: context.read<CautionVm>().onCnicValidate,
-                    inputFormatters: [CNICInputFormatter()]
-                  ),
-                  const SizedBox(height: 16),
-                  
-                  AppTextField(
-                    label: 'Address.*',
-                    onSaved: context.read<CautionVm>().onAddressSaved,
-                    validator: context.read<CautionVm>().onAddressValidate,
-                  ),
-                  const SizedBox(height: 16),
-                  
-                  AppTextField(
-                    label: 'Next of Kin Name.*',
-                    onSaved: context.read<CautionVm>().onNokNameSaved,
-                    validator: context.read<CautionVm>().onNokNameValidate,
-                    inputFormatters: [onlyAlphabetsFormatter],
-                  ),
-                  const SizedBox(height: 16),
-                  
-                  AppTextField(
-                    label: 'Next of Kin Mobile.*',
-                    keyboardType: TextInputType.phone,
-                    onSaved: context.read<CautionVm>().onNokMobileSaved,
-                    validator: context.read<CautionVm>().onNokMobileValidate,
-                  ),
-                  const SizedBox(height: 16),
-                  
-                  AppTextField(
-                    label: 'Next of Kin CNIC.*',
-                    keyboardType: TextInputType.number,
-                    onSaved: context.read<CautionVm>().onNokCnicSaved,
-                    validator: context.read<CautionVm>().onNokCnicValidate,
-                  ),
-                  const SizedBox(height: 16),
-                  
-                  Padding(
-                    padding: const EdgeInsets.only(left: 14, bottom: 5),
-                    child: Text(
-                      'Relation with Next of Kin.*',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ),
-                  DropdownButtonFormField<String>(
-                    items: relations,
-                    onChanged: context.read<CautionVm>().onRelationChanged,
-                    validator: context.read<CautionVm>().onRelationValidate,
-                    decoration: const InputDecoration(
-                      filled: true,
-                      fillColor: Color(0xFFF3F3F3),
-                      contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 18),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(10)),
-                        borderSide: BorderSide(color: Color(0xFFE0E0E0)),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(10)),
-                        borderSide: BorderSide(color: Color(0xFFE0E0E0)),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(10)),
-                        borderSide: BorderSide(color: AppColors.primary, width: 1.4),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 24),
-              SizedBox(
-                height: 56,
-                child: Consumer<CautionVm>(
-                  builder: (context, vm, _) => ElevatedButton(
-                    onPressed: vm.isBusy ? null : _onUpdate,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.primary,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      textStyle: const TextStyle(
-                        fontWeight: FontWeight.w700,
-                        fontSize: 16,
-                      ),
-                    ),
-                    child: vm.isBusy
-                        ? const SizedBox(
-                            width: 22,
-                            height: 22,
-                            child: CircularProgressIndicator(
-                              strokeWidth: 2.4,
-                              valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                            ),
-                          )
-                        : const Text('Next'),
+        child: vm.isLoading ? 
+          Center(
+            widthFactor: 1,
+            heightFactor: 1,
+            child: SizedBox.square(
+              dimension: 30,
+              child: LoadingWidget(size: 30, color: AppColors.primary),
+            ),
+          ) : 
+          Form(
+            key: _formKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Text(
+                  'Enter the details below to open \nthe dashboard.',
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: const Color(0xFF808A93),
+                    fontWeight: FontWeight.w500,
                   ),
                 ),
-              ),
-            ],
+                const SizedBox(height: 40),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Selector<CautionVm, int>(
+                      selector: (_, vm) => vm.guardianType,
+                      builder: (context, guardianType, _) {
+                        final onChanged = context.read<CautionVm>().onGuardianTypeChanged; // handler doesn't trigger rebuilds
+                        return Row(
+                          children: [
+                            Expanded(
+                              child: _CompactRadio<int>(
+                                label: 'Father Name',
+                                value: 0,
+                                groupValue: guardianType,      // ← comes from Selector (listens)
+                                onChanged: onChanged,
+                              ),
+                            ),
+                            const SizedBox(width: 6),
+                            Expanded(
+                              child: _CompactRadio<int>(
+                                label: 'Husband Name',
+                                value: 1,
+                                groupValue: guardianType,
+                                onChanged: onChanged,
+                              ),
+                            ),
+                          ],
+                        );
+                      },
+                    ),
+                    const SizedBox(height: 8),
+                    
+                    AppTextField(
+                      initialValue: vm.guardianType == 1 ? initialData.husbandName : initialData.fatherName,
+                      placeholder: context.read<CautionVm>().guardianLabel,
+                      onSaved: context.read<CautionVm>().onGuardianSaved,
+                      validator: context.read<CautionVm>().onGuardianValidate,
+                      inputFormatters: [onlyAlphabetsFormatter],
+                    ),
+                    const SizedBox(height: 16),
+                    
+                    AppTextField(
+                      initialValue: initialData.mobile,
+                      label: 'Mobile No.*',
+                      keyboardType: TextInputType.phone,
+                      onSaved: context.read<CautionVm>().onMobileSaved,
+                      validator: context.read<CautionVm>().onMobileValidate,
+                      inputFormatters: [mobileNumberFormatter],
+                    ),
+                    const SizedBox(height: 16),
+                    
+                    AppTextField(
+                      initialValue: initialData.cnic,
+                      label: 'CNIC.*',
+                      keyboardType: TextInputType.number,
+                      onSaved: context.read<CautionVm>().onCnicSaved,
+                      validator: context.read<CautionVm>().onCnicValidate,
+                      inputFormatters: [CNICInputFormatter()]
+                    ),
+                    const SizedBox(height: 16),
+                    
+                    AppTextField(
+                      initialValue: initialData.address,
+                      label: 'Address.*',
+                      onSaved: context.read<CautionVm>().onAddressSaved,
+                      validator: context.read<CautionVm>().onAddressValidate,
+                    ),
+                    const SizedBox(height: 16),
+                    
+                    AppTextField(
+                      initialValue: initialData.nokName,
+                      label: 'Next of Kin Name.*',
+                      onSaved: context.read<CautionVm>().onNokNameSaved,
+                      validator: context.read<CautionVm>().onNokNameValidate,
+                      inputFormatters: [onlyAlphabetsFormatter],
+                    ),
+                    const SizedBox(height: 16),
+                    
+                    AppTextField(
+                      initialValue: initialData.nokPhone,
+                      label: 'Next of Kin Mobile.*',
+                      keyboardType: TextInputType.phone,
+                      onSaved: context.read<CautionVm>().onNokMobileSaved,
+                      validator: context.read<CautionVm>().onNokMobileValidate,
+                    ),
+                    const SizedBox(height: 16),
+                    
+                    AppTextField(
+                      initialValue: initialData.nokCnic,
+                      label: 'Next of Kin CNIC.*',
+                      keyboardType: TextInputType.number,
+                      onSaved: context.read<CautionVm>().onNokCnicSaved,
+                      validator: context.read<CautionVm>().onNokCnicValidate,
+                    ),
+                    const SizedBox(height: 16),
+                    
+                    Padding(
+                      padding: const EdgeInsets.only(left: 14, bottom: 5),
+                      child: Text(
+                        'Relation with Next of Kin.*',
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
+                    DropdownButtonFormField<String>(
+                      initialValue: initialData.nokRelation,
+                      items: relations,
+                      onChanged: context.read<CautionVm>().onRelationChanged,
+                      validator: context.read<CautionVm>().onRelationValidate,
+                      decoration: const InputDecoration(
+                        filled: true,
+                        fillColor: Color(0xFFF3F3F3),
+                        contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 18),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(10)),
+                          borderSide: BorderSide(color: Color(0xFFE0E0E0)),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(10)),
+                          borderSide: BorderSide(color: Color(0xFFE0E0E0)),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(10)),
+                          borderSide: BorderSide(color: AppColors.primary, width: 1.4),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 24),
+                SizedBox(
+                  height: 56,
+                  child: Consumer<CautionVm>(
+                    builder: (context, vm, _) => ElevatedButton(
+                      onPressed: vm.isBusy ? null : _onUpdate,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.primary,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        textStyle: const TextStyle(
+                          fontWeight: FontWeight.w700,
+                          fontSize: 16,
+                        ),
+                      ),
+                      child: vm.isBusy ? LoadingWidget() : const Text('Next'),
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
-        ),
       ),
     );
   }
@@ -210,6 +227,8 @@ class _CautionScreenState extends State<CautionScreen> {
       final resp = await context.read<CautionVm>().update();
 
       if(resp.success) {
+        // ignore: use_build_context_synchronously
+        SnackbarService.showSuccessSnack(context, 'Manadatory Info Saved Sucessfully!');
         // ignore: use_build_context_synchronously
         // context.pushReplacement(CautionScreen());        
       } else {
