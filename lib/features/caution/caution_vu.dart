@@ -29,7 +29,7 @@ class _CautionScreenState extends State<CautionScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final vm = context.read<CautionVm>();
+    final vm = context.watch<CautionVm>();
     MandatoryInfo initialData = vm.data;
     return Scaffold(
       body: AuthBackground(
@@ -96,7 +96,7 @@ class _CautionScreenState extends State<CautionScreen> {
                     
                     AppTextField(
                       initialValue: vm.guardianType == 1 ? initialData.husbandName : initialData.fatherName,
-                      placeholder: context.read<CautionVm>().guardianLabel,
+                      placeholder: vm.guardianLabel,
                       onSaved: context.read<CautionVm>().onGuardianSaved,
                       validator: context.read<CautionVm>().onGuardianValidate,
                       inputFormatters: [onlyAlphabetsFormatter],

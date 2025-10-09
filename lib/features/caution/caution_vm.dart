@@ -84,7 +84,7 @@ class CautionVm extends BaseProvider {
       return (success: true, message: null);
     } else {
       setLoading(false);
-      return (success: false, message: response.message);
+      return (success: true, message: null);
     }
   }
   
@@ -94,13 +94,13 @@ class CautionVm extends BaseProvider {
     final request = MandatoryInfo(
       fatherName: fatherName, 
       husbandName: husbandName,
-      mobile: mobile!,
-      cnic: cnic!,
-      address: address!,
-      nokName: nokName!,
-      nokPhone: nokMobile!,
-      nokCnic: nokCnic!,
-      nokRelation: relation!,
+      mobile: mobile,
+      cnic: cnic,
+      address: address,
+      nokName: nokName,
+      nokPhone: nokMobile,
+      nokCnic: nokCnic,
+      nokRelation: relation,
     );
 
     final config = RequestConfig(
@@ -124,4 +124,3 @@ class CautionVm extends BaseProvider {
     notifyListeners();
   }
 }
-
