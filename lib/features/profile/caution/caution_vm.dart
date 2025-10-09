@@ -78,6 +78,7 @@ class CautionVm extends BaseProvider {
 
     if(response.success) {
       data = response.data!;
+      relation = data.nokRelation;
       if (data.husbandName.existAndNotEmpty) { guardianType = 1; }
       else { guardianType = 0; }
       setLoading(false);

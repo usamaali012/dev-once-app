@@ -50,6 +50,8 @@ class UpdateBankDetailsVm extends BaseProvider {
       final res = await client.get(config);
       if (res.success) {
         details = res.data!;
+        bankName = details.bankName;
+        ownership = details.ownership;
         return (success: true, message: null);
       }
       return (success: false, message: res.message);
