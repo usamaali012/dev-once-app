@@ -1,28 +1,28 @@
 class MandatoryInfo {
   final String? fatherName;
   final String? husbandName;
-  final String mobile;
+  final String? mobile;
   final bool? isWhatsapp;
-  final String cnic;
-  final String address;
-  final String nokName;
-  final String nokPhone;
-  final String nokCnic;
+  final String? cnic;
+  final String? address;
+  final String? nokName;
+  final String? nokPhone;
+  final String? nokCnic;
   final bool? nokIsWhatsapp;
-  final String nokRelation;
+  final String? nokRelation;
 
   const MandatoryInfo({
     this.fatherName, 
     this.husbandName,
-    required this.mobile,
+    this.mobile,
     this.isWhatsapp = false,
-    required this.cnic,
-    required this.address,
-    required this.nokName,
-    required this.nokPhone,
-    required this.nokCnic,
+    this.cnic,
+    this.address,
+    this.nokName,
+    this.nokPhone,
+    this.nokCnic,
     this.nokIsWhatsapp = false,
-    required this.nokRelation,
+    this.nokRelation,
 
   });
 
