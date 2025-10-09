@@ -1,14 +1,14 @@
 import 'package:dev_once_app/core/utils/app_validators.dart';
 import 'package:dev_once_app/core/utils/snackbar_service.dart';
 import 'package:dev_once_app/core/widgets/app_loading.dart';
-import 'package:dev_once_app/features/caution/caution_model.dart';
+import 'package:dev_once_app/features/profile/caution/caution_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:dev_once_app/core/constants/assets.dart';
 import 'package:dev_once_app/core/theme/app_colors.dart';
 import 'package:dev_once_app/core/widgets/app_text_field.dart';
 import 'package:dev_once_app/core/widgets/app_background.dart';
-import 'package:dev_once_app/features/caution/caution_vm.dart';
+import 'package:dev_once_app/features/profile/caution/caution_vm.dart';
 import 'package:provider/provider.dart';
 
 class CautionScreen extends StatefulWidget {
