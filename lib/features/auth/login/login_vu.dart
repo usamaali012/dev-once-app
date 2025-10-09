@@ -5,6 +5,7 @@ import 'package:dev_once_app/core/widgets/app_text_field.dart';
 import 'package:dev_once_app/features/auth/forgot_password/forgot_password_vu.dart';
 import 'package:dev_once_app/features/auth/login/login_vm.dart';
 import 'package:dev_once_app/core/widgets/app_background.dart';
+import 'package:dev_once_app/features/profile/update_bank_details/update_bank_details_vu.dart';
 import 'package:dev_once_app/features/profile/caution/caution_vu.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_extensions_pack/flutter_extensions_pack.dart';
@@ -165,13 +166,13 @@ class _LoginVuState extends State<LoginVu> {
       final resp = await context.read<LoginVm>().login();
 
       if(resp.success) {
-        // ignore: use_build_context_synchronously
-        context.pushReplacement(CautionScreen());
-        // if (resp.message == 'caution') {
-           
-        // } else {
-
-        // }
+        if (resp.message == 'caution') {
+          // ignore: use_build_context_synchronously
+          context.pushReplacement(CautionScreen());
+        } else {
+          // ignore: use_build_context_synchronously
+          context.pushReplacement(UpdateBankDetailsVu());
+        }
         
       } else {
         // ignore: use_build_context_synchronously

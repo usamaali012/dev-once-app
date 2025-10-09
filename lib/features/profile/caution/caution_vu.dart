@@ -1,3 +1,4 @@
+import 'package:dev_once_app/core/constants/relationships.dart';
 import 'package:dev_once_app/core/utils/app_validators.dart';
 import 'package:dev_once_app/core/utils/snackbar_service.dart';
 import 'package:dev_once_app/core/widgets/app_loading.dart';
@@ -170,7 +171,7 @@ class _CautionScreenState extends State<CautionScreen> {
                     ),
                     DropdownButtonFormField<String>(
                       initialValue: initialData.nokRelation,
-                      items: relations,
+                      items: relationships,
                       onChanged: context.read<CautionVm>().onRelationChanged,
                       validator: context.read<CautionVm>().onRelationValidate,
                       decoration: const InputDecoration(
@@ -237,27 +238,6 @@ class _CautionScreenState extends State<CautionScreen> {
       }
     }
   }
-  
-  final relations = [
-    DropdownMenuItem(value: 'Father', child: Text('Father')),
-    DropdownMenuItem(value: 'Mother', child: Text('Mother')),
-    DropdownMenuItem(value: 'Brother', child: Text('Brother')),
-    DropdownMenuItem(value: 'Sister', child: Text('Sister')),
-    DropdownMenuItem(value: 'Son', child: Text('Son')),
-    DropdownMenuItem(value: 'Husband', child: Text('Husband')),
-    DropdownMenuItem(value: 'Grandfather', child: Text('Grandfather')),
-    DropdownMenuItem(value: 'Uncle', child: Text('Grandson')),
-    DropdownMenuItem(value: 'Uncle', child: Text('Uncle')),
-    DropdownMenuItem(value: 'Nephew', child: Text('Nephew')),
-    DropdownMenuItem(value: 'Daughter', child: Text('Daughter')),
-    DropdownMenuItem(value: 'Wife', child: Text('Wife')),
-    DropdownMenuItem(value: 'Grandmother', child: Text('Grandmother')),
-    DropdownMenuItem(value: 'Granddaughter', child: Text('Granddaughter')),
-    DropdownMenuItem(value: 'Aunt', child: Text('Aunt')),
-    DropdownMenuItem(value: 'Niece', child: Text('Niece')),
-    DropdownMenuItem(value: 'Cousin', child: Text('Cousin')),
-    DropdownMenuItem(value: 'Self', child: Text('Self')),
-  ];
 
   final doIcon = SvgPicture.asset(
     AppAssets.authDo,

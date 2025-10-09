@@ -11,6 +11,7 @@ class AppTextField extends StatefulWidget {
     this.focusNode,
     this.initialValue,
     this.label,
+    this.inputLabel,
     this.placeholder,
     this.labelColor = Colors.black,
     this.fillColor = const Color(0xFFF3F3F3),
@@ -36,6 +37,7 @@ class AppTextField extends StatefulWidget {
   final FocusNode? focusNode;
   final String? initialValue;
   final String? label;
+  final String? inputLabel;
   final String? placeholder;
   final Color labelColor;
   final Color fillColor;
@@ -116,6 +118,7 @@ class _AppTextFieldState extends State<AppTextField> {
         maxLines: widget.isPassword ? 1 : widget.maxLines,
         decoration: InputDecoration(
           hintText: widget.placeholder,
+          labelText: widget.inputLabel,
           filled: true,
           fillColor: widget.fillColor,
           contentPadding: const EdgeInsets.symmetric(

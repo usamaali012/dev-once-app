@@ -50,8 +50,8 @@ class LoginVm extends BaseProvider {
       }
       final data = resp.data as SessionData;
 
-      var message = 'dashboard';
-      if (data.mandatoryInfo) { message = 'caution'; }
+      var message = 'caution';
+      if (data.mandatoryInfo) { message = 'dashboard'; }
 
       return (success: true, message: message);
     }

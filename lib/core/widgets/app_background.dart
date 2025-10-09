@@ -1,18 +1,17 @@
 import 'package:dev_once_app/core/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 
-/// Reusable auth layout with responsive header and a rounded white sheet.
 class AppBackground extends StatelessWidget {
   const AppBackground({
     super.key,
     required this.title,
     required this.child,
-    this.headerFraction = 0.30, // 30% of safe screen height
+    this.headerFraction = 0.30, 
     this.topCornerRadius = 27,
-    this.leading,                 // e.g., DO icon
-    this.topRightDecoration,      // e.g., rounded shapes svg
+    this.leading,                 
+    this.topRightDecoration,      
     this.bottomLeftDecoration,
-    this.overlapGraphic,          // e.g., phone svg overlapping the sheet
+    this.overlapGraphic,
     this.showBackButton = false,
     this.backIconColor = Colors.white,
     this.onBack,
@@ -37,14 +36,12 @@ class AppBackground extends StatelessWidget {
     final safeHeight = size.height - mq.padding.top - mq.padding.bottom;
 
     final headerHeight = (safeHeight * headerFraction).clamp(180.0, 360.0);
-    const sheetTopOverlap = 12.0;       // small overlap to “kiss” the header
-    final overlapOffset = size.height * 0.06; // protrusion height if overlapGraphic is used
-    final topSafe = mq.padding.top;      // status bar height for proper positioning
+    const sheetTopOverlap = 12.0;
+    final overlapOffset = size.height * 0.06; 
+    final topSafe = mq.padding.top;
 
-    // Always expand to the full available size so we don't depend on
-    // ancestor constraints being tight (avoids partial-height scenarios).
     return SizedBox.expand(
-      child: ColoredBox(                 // base layer prevents Scaffold bg showing through
+      child: ColoredBox(           
         color: AppColors.secondary,
         child: Stack(
           clipBehavior: Clip.none,
