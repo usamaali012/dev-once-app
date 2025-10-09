@@ -156,6 +156,7 @@ class _CautionScreenState extends State<CautionScreen> {
                       keyboardType: TextInputType.number,
                       onSaved: context.read<CautionVm>().onNokCnicSaved,
                       validator: context.read<CautionVm>().onNokCnicValidate,
+                      inputFormatters: [CNICInputFormatter()]
                     ),
                     const SizedBox(height: 16),
                     
