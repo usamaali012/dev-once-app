@@ -1,4 +1,7 @@
+import 'package:dev_once_app/core/utils/app_validators.dart';
+import 'package:dev_once_app/core/utils/snackbar_service.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:dev_once_app/core/constants/assets.dart';
 import 'package:dev_once_app/core/theme/app_colors.dart';
@@ -44,26 +47,32 @@ class _CautionScreenState extends State<CautionScreen> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Row(
-                    children: [
-                      Expanded(
-                        child: _CompactRadio<int>(
-                          label: 'Father Name',
-                          value: 0,
-                          groupValue: context.read<CautionVm>().nameType,
-                          onChanged: context.read<CautionVm>().onNameTypeChanged,
-                        ),
-                      ),
-                      // const SizedBox(width: 3),
-                      Expanded(
-                        child: _CompactRadio<int>(
-                          label: 'Husband Name',
-                          value: 1,
-                          groupValue: context.read<CautionVm>().nameType,
-                          onChanged: context.read<CautionVm>().onNameTypeChanged
-                        ),
-                      ),
-                    ],
+                  Selector<CautionVm, int>(
+                    selector: (_, vm) => vm.guardianType,
+                    builder: (context, guardianType, _) {
+                      final onChanged = context.read<CautionVm>().onGuardianTypeChanged; // handler doesn't trigger rebuilds
+                      return Row(
+                        children: [
+                          Expanded(
+                            child: _CompactRadio<int>(
+                              label: 'Father Name',
+                              value: 0,
+                              groupValue: guardianType,      // ← comes from Selector (listens)
+                              onChanged: onChanged,
+                            ),
+                          ),
+                          const SizedBox(width: 6),
+                          Expanded(
+                            child: _CompactRadio<int>(
+                              label: 'Husband Name',
+                              value: 1,
+                              groupValue: guardianType,
+                              onChanged: onChanged,
+                            ),
+                          ),
+                        ],
+                      );
+                    },
                   ),
                   const SizedBox(height: 8),
                   
@@ -71,6 +80,7 @@ class _CautionScreenState extends State<CautionScreen> {
                     placeholder: context.read<CautionVm>().guardianLabel,
                     onSaved: context.read<CautionVm>().onGuardianSaved,
                     validator: context.read<CautionVm>().onGuardianValidate,
+                    inputFormatters: [onlyAlphabetsFormatter],
                   ),
                   const SizedBox(height: 16),
                   
@@ -79,6 +89,7 @@ class _CautionScreenState extends State<CautionScreen> {
                     keyboardType: TextInputType.phone,
                     onSaved: context.read<CautionVm>().onMobileSaved,
                     validator: context.read<CautionVm>().onMobileValidate,
+                    inputFormatters: [mobileNumberFormatter],
                   ),
                   const SizedBox(height: 16),
                   
@@ -87,7 +98,7 @@ class _CautionScreenState extends State<CautionScreen> {
                     keyboardType: TextInputType.number,
                     onSaved: context.read<CautionVm>().onCnicSaved,
                     validator: context.read<CautionVm>().onCnicValidate,
-                    // inputFormatters: ''
+                    inputFormatters: [CNICInputFormatter()]
                   ),
                   const SizedBox(height: 16),
                   
@@ -102,6 +113,7 @@ class _CautionScreenState extends State<CautionScreen> {
                     label: 'Next of Kin Name.*',
                     onSaved: context.read<CautionVm>().onNokNameSaved,
                     validator: context.read<CautionVm>().onNokNameValidate,
+                    inputFormatters: [onlyAlphabetsFormatter],
                   ),
                   const SizedBox(height: 16),
                   
@@ -160,12 +172,7 @@ class _CautionScreenState extends State<CautionScreen> {
                 height: 56,
                 child: Consumer<CautionVm>(
                   builder: (context, vm, _) => ElevatedButton(
-                    onPressed: vm.isBusy ? null : () async {
-                      if (!(_formKey.currentState?.validate() ?? false)) return;
-                      _formKey.currentState!.save();
-                      await vm.update();
-                      // Next step can be handled later
-                    },
+                    onPressed: vm.isBusy ? null : _onUpdate,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.primary,
                       shape: RoundedRectangleBorder(
@@ -196,6 +203,22 @@ class _CautionScreenState extends State<CautionScreen> {
     );
   }
 
+  Future<void> _onUpdate() async {
+    if(_formKey.currentState?.validate() ?? false) {
+      _formKey.currentState!.save();
+
+      final resp = await context.read<CautionVm>().update();
+
+      if(resp.success) {
+        // ignore: use_build_context_synchronously
+        // context.pushReplacement(CautionScreen());        
+      } else {
+        // ignore: use_build_context_synchronously
+        SnackbarService.showErrorSnack(context, resp.message!);
+      }
+    }
+  }
+  
   final relations = [
     DropdownMenuItem(value: 'Father', child: Text('Father')),
     DropdownMenuItem(value: 'Mother', child: Text('Mother')),
@@ -244,7 +267,6 @@ class _CautionScreenState extends State<CautionScreen> {
       fit: BoxFit.contain,
     ),
   );
-
 }
 
 class _CompactRadio<T> extends StatelessWidget {
@@ -268,25 +290,15 @@ class _CompactRadio<T> extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          RadioGroup(
-            onChanged: onChanged, 
-            groupValue: groupValue,
-            child: Radio<T>(
-              value: value,
-              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-              visualDensity: const VisualDensity(
-                horizontal: -4, 
-                vertical: -4,
-              ),
-          )
+          Radio<T>(
+            value: value,
+            groupValue: groupValue,           // ← direct binding
+            onChanged: onChanged,             // ← direct binding
+            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            visualDensity: const VisualDensity(horizontal: -4, vertical: -4),
           ),
           const SizedBox(width: 6),
-          Flexible(
-            child: Text(
-              label,
-              style: Theme.of(context).textTheme.bodyMedium,
-            ),
-          ),
+          Flexible(child: Text(label, style: Theme.of(context).textTheme.bodyMedium)),
         ],
       ),
     );

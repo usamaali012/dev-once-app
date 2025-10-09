@@ -1,22 +1,27 @@
 import 'package:flutter/services.dart';
 
-/// # NumberInputFormatter
-/// A [TextInputFormatter] that allows only numeric digits in the input.
-class NumberInputFormatter extends TextInputFormatter {
-  /// Formats the input to allow only numeric digits.
-  ///
-  /// [oldValue] The previous value of the text input.
-  /// [newValue] The new value to be formatted.
-  ///
-  /// Returns a new [TextEditingValue] with only numeric characters.
-  @override
-  TextEditingValue formatEditUpdate(TextEditingValue oldValue, TextEditingValue newValue) {
-    // Allow only numeric digits by removing any non-digit characters
-    String newText = newValue.text.replaceAll(RegExp(r'[^0-9]'), '');
+final onlyAlphabetsFormatter = FilteringTextInputFormatter.allow(RegExp(r"[a-zA-Z\s]"));
+final mobileNumberFormatter = FilteringTextInputFormatter.allow(RegExp(r"[0-9+\-]"));
 
-    return newValue.copyWith(
-      text: newText,
-      selection: TextSelection.collapsed(offset: newText.length),
+class CNICInputFormatter extends TextInputFormatter {
+  @override
+  TextEditingValue formatEditUpdate(
+    TextEditingValue oldValue,
+    TextEditingValue newValue,
+  ) {
+    String digits = newValue.text.replaceAll(RegExp(r'[^0-9]'), '');
+    String formatted = '';
+
+    for (int i = 0; i < digits.length && i < 13; i++) {
+      formatted += digits[i];
+      if (i == 4 || i == 11) {
+        formatted += '-';
+      }
+    }
+
+    return TextEditingValue(
+      text: formatted,
+      selection: TextSelection.collapsed(offset: formatted.length),
     );
   }
 }

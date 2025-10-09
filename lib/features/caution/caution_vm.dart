@@ -2,11 +2,13 @@ import 'package:dev_once_app/core/models/base_provider.dart';
 import 'package:dev_once_app/core/models/request_config.dart';
 import 'package:dev_once_app/features/caution/caution_model.dart';
 import 'package:dev_once_app/core/utils/extensions.dart';
+// import 'package:flutter/material.dart';
+import 'package:flutter_extensions_pack/flutter_extensions_pack.dart';
 
 
 class CautionVm extends BaseProvider {
   // 0 = Father, 1 = Husband
-  int nameType = 0;
+  int guardianType = 0;
 
   String? fatherName;
   String? husbandName;
@@ -19,21 +21,23 @@ class CautionVm extends BaseProvider {
   String? relation;
 
   // UI helpers
-  String get guardianLabel => nameType == 0 ? 'Father Name' : 'Husband Name';
+  String get guardianLabel => guardianType == 0 ? 'Father Name' : 'Husband Name';
 
   // Mutators
-  void onNameTypeChanged(int? value) {
-    nameType = value ?? 0;
+  void onGuardianTypeChanged(int? value) {
+    guardianType = value ?? 0;
     notifyListeners();
   }
 
   void onGuardianSaved(String? v) {
     final guardianName = v?.trim();
 
-    if (nameType == 0) {
+    if (guardianType == 0) {
       fatherName = guardianName;
+      husbandName = null;
     } else {
       husbandName = guardianName;
+      fatherName = null;
     }
   }
   void onMobileSaved(String? v) => mobile = v?.trim();
@@ -62,6 +66,23 @@ class CautionVm extends BaseProvider {
   String? onNokCnicValidate(String? v) => req(v, label: 'Next of Kin CNIC');
   String? onRelationValidate(String? v) => v == null || v.isEmpty ? 'Relation is required' : null;
 
+  Future<({bool success, String? message})> get() async {
+    final config = RequestConfig<MandatoryInfo>(
+      endpoint: '/user/get-mandatory-info',
+    );
+
+    final response = await client.get(config);
+
+    if(response.success) {
+      MandatoryInfo mandatoryInfo = response.data!;
+      if (mandatoryInfo.husbandName.existAndNotEmpty) { guardianType = 1; }
+      else { guardianType = 0; }
+      return (success: true, message: null);
+    } else {
+      return (success: false, message: response.message);
+    }
+  }
+  
   Future<({bool success, String? message})> update() async {
     setBusy(true);
 
@@ -77,7 +98,7 @@ class CautionVm extends BaseProvider {
       nokRelation: relation!,
     );
 
-    final config = RequestConfig<Map<String, dynamic>>(
+    final config = RequestConfig(
       endpoint: '/auth/update-mandatory-info',
       request: request.toJson(),
     );
