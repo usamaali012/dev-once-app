@@ -4,7 +4,7 @@ import 'package:dev_once_app/core/utils/snackbar_service.dart';
 import 'package:dev_once_app/core/widgets/app_loading.dart';
 import 'package:dev_once_app/features/auth/forgot_password/forgot_password_vm.dart';
 import 'package:dev_once_app/features/auth/otp/otp_vm.dart';
-import 'package:dev_once_app/features/auth/widgets/auth_background.dart';
+import 'package:dev_once_app/core/widgets/auth_background.dart';
 import 'package:dev_once_app/features/auth/reset_password/reset_password_vu.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -115,7 +115,7 @@ class _OtpScreenState extends State<OtpScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: AuthBackground(
+      body: AppBackground(
         title: 'Enter\nOTP Code',
         headerFraction: 0.30,
         topCornerRadius: 30,

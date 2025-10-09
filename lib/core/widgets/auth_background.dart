@@ -2,8 +2,8 @@ import 'package:dev_once_app/core/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 
 /// Reusable auth layout with responsive header and a rounded white sheet.
-class AuthBackground extends StatelessWidget {
-  const AuthBackground({
+class AppBackground extends StatelessWidget {
+  const AppBackground({
     super.key,
     required this.title,
     required this.child,

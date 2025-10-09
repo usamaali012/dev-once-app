@@ -7,7 +7,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:dev_once_app/core/constants/assets.dart';
 import 'package:dev_once_app/core/theme/app_colors.dart';
 import 'package:dev_once_app/core/widgets/app_text_field.dart';
-import 'package:dev_once_app/features/auth/widgets/auth_background.dart';
+import 'package:dev_once_app/core/widgets/auth_background.dart';
 import 'package:dev_once_app/features/caution/caution_vm.dart';
 import 'package:provider/provider.dart';
 
@@ -32,7 +32,7 @@ class _CautionScreenState extends State<CautionScreen> {
     final vm = context.watch<CautionVm>();
     MandatoryInfo initialData = vm.data;
     return Scaffold(
-      body: AuthBackground(
+      body: AppBackground(
         title: 'Caution',
         headerFraction: 0.30,
         topCornerRadius: 30,
