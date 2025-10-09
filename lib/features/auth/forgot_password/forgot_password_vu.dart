@@ -5,7 +5,7 @@ import 'package:dev_once_app/core/widgets/app_loading.dart';
 import 'package:dev_once_app/core/widgets/app_text_field.dart';
 import 'package:dev_once_app/features/auth/forgot_password/forgot_password_vm.dart';
 import 'package:dev_once_app/features/auth/otp/otp_vu.dart';
-import 'package:dev_once_app/core/widgets/auth_background.dart';
+import 'package:dev_once_app/core/widgets/app_background.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_extensions_pack/flutter_extensions_pack.dart';
 import 'package:flutter_svg/flutter_svg.dart';
