@@ -41,6 +41,7 @@ class LoginVm extends BaseProvider {
     ApiResponse response = await client.post(config);
 
     if(response.success) {
+      client.setAuthToken(response.data!.accessToken);
       final resp = await _fetchMe(response.data!.accessToken);
       setBusy(false);
 
