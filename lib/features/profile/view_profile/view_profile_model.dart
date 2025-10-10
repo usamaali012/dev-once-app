@@ -1,4 +1,5 @@
 class ViewProfileModel {
+  final String? name;
   final String? fatherName;
   final String? husbandName;
   final String? cnic;
@@ -18,6 +19,7 @@ class ViewProfileModel {
   final String? ownership;
 
   const ViewProfileModel({
+    this.name,
     this.fatherName,
     this.husbandName,
     this.cnic,
@@ -38,6 +40,7 @@ class ViewProfileModel {
   });
 
   factory ViewProfileModel.fromJson(Map<String, dynamic> json) => ViewProfileModel(
+    name: json['name'],
     fatherName: json['father_name'],
     husbandName: json['husband_name'],
     cnic: json['cnic'],
