@@ -4,6 +4,7 @@ import 'package:dev_once_app/features/profile/caution/caution_vm.dart';
 import 'package:dev_once_app/features/auth/reset_password/reset_password_vm.dart';
 import 'package:dev_once_app/features/profile/update_bank_details/update_bank_details_vm.dart';
 import 'package:dev_once_app/features/profile/update_profile/update_profile_vm.dart';
+import 'package:dev_once_app/features/profile/view_profile/view_profile_vm.dart';
 import 'package:dev_once_app/features/auth/login/login_vm.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_extensions_pack/flutter_extensions_pack.dart';
@@ -32,6 +33,7 @@ class DevOnceApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => CautionVm()..get()),
         ChangeNotifierProvider(create: (_) => UpdateBankDetailsVm()..get()),
         ChangeNotifierProvider(create: (_) => UpdateProfileVm()..get()),
+        ChangeNotifierProvider(create: (_) => ViewProfileVm()..get()),
       ],
       child: MaterialApp(
         title: 'Dev Once',
