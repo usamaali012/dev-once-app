@@ -24,14 +24,8 @@ class _UpdateBankDetailsVuState extends State<UpdateBankDetailsVu> {
   final _formKey = GlobalKey<FormState>();
 
   @override
-  void initState() {
-    super.initState();
-    context.read<UpdateBankDetailsVm>().get();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    final vm = context.watch<UpdateBankDetailsVm>();
+    final vm = context.read<UpdateBankDetailsVm>();
 
     return Scaffold(
       body: AppBackground(
@@ -41,7 +35,7 @@ class _UpdateBankDetailsVuState extends State<UpdateBankDetailsVu> {
         leading: doIcon,
         topRightDecoration: roundedTopRight,
         // overlapGraphic: mobileIcon,
-        child: vm.isLoading
+        child: context.watch<UpdateBankDetailsVm>().isLoading
           ? Center(
               child: LoadingWidget(size: 30, color: AppColors.primary),
             )

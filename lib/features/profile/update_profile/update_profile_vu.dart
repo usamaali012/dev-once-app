@@ -25,14 +25,8 @@ class _UpdateProfileVuState extends State<UpdateProfileVu> {
   final _formKey = GlobalKey<FormState>();
 
   @override
-  void initState() {
-    super.initState();
-    context.read<UpdateProfileVm>().get();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    final vm = context.watch<UpdateProfileVm>();
+    final vm = context.read<UpdateProfileVm>();
 
     return Scaffold(
       body: AppBackground(
@@ -42,7 +36,7 @@ class _UpdateProfileVuState extends State<UpdateProfileVu> {
         leading: doIcon,
         topRightDecoration: roundedTopRight,
         overlapGraphic: ImageWidget(size: 40, url: vm.details.profileImageCompleteUrl),
-        child: vm.isLoading
+        child: context.watch<UpdateProfileVm>().isLoading
           ? Center(child: LoadingWidget(size: 30, color: AppColors.primary))
           : Form(
               key: _formKey,

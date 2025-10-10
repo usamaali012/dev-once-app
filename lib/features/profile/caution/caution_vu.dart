@@ -3,7 +3,9 @@ import 'package:dev_once_app/core/utils/app_validators.dart';
 import 'package:dev_once_app/core/utils/snackbar_service.dart';
 import 'package:dev_once_app/core/widgets/app_loading.dart';
 import 'package:dev_once_app/features/profile/caution/caution_model.dart';
+import 'package:dev_once_app/features/profile/update_profile/update_profile_vu.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_extensions_pack/flutter_extensions_pack.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:dev_once_app/core/constants/assets.dart';
 import 'package:dev_once_app/core/theme/app_colors.dart';
@@ -23,14 +25,8 @@ class _CautionScreenState extends State<CautionScreen> {
   final _formKey = GlobalKey<FormState>();
 
   @override
-  void initState() {
-    super.initState();
-    context.read<CautionVm>().get();   
-  }
-
-  @override
   Widget build(BuildContext context) {
-    final vm = context.watch<CautionVm>();
+    final vm = context.read<CautionVm>();
     MandatoryInfo initialData = vm.data;
     return Scaffold(
       body: AppBackground(
@@ -40,7 +36,7 @@ class _CautionScreenState extends State<CautionScreen> {
         leading: doIcon,
         topRightDecoration: roundedTopRight,
         overlapGraphic: mobileIcon,
-        child: vm.isLoading ? 
+        child: context.watch<CautionVm>().isLoading ? 
           Center(
             widthFactor: 1,
             heightFactor: 1,
@@ -232,7 +228,7 @@ class _CautionScreenState extends State<CautionScreen> {
         // ignore: use_build_context_synchronously
         SnackbarService.showSuccessSnack(context, 'Manadatory Info Saved Sucessfully!');
         // ignore: use_build_context_synchronously
-        // context.pushReplacement(CautionScreen());        
+        context.pushReplacement(UpdateProfileVu());        
       } else {
         // ignore: use_build_context_synchronously
         SnackbarService.showErrorSnack(context, resp.message!);

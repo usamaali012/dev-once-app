@@ -28,10 +28,10 @@ class DevOnceApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => LoginVm()),
         ChangeNotifierProvider(create: (_) => ForgotPasswordVm()),
         ChangeNotifierProvider(create: (_) => OtpVm()),
-        ChangeNotifierProvider(create: (_) => CautionVm()),
         ChangeNotifierProvider(create: (_) => ResetPasswordVm()),
-        ChangeNotifierProvider(create: (_) => UpdateBankDetailsVm()),
-        ChangeNotifierProvider(create: (_) => UpdateProfileVm()),
+        ChangeNotifierProvider(create: (_) => CautionVm()..get()),
+        ChangeNotifierProvider(create: (_) => UpdateBankDetailsVm()..get()),
+        ChangeNotifierProvider(create: (_) => UpdateProfileVm()..get()),
       ],
       child: MaterialApp(
         title: 'Dev Once',
