@@ -3,8 +3,18 @@ import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_extensions_pack/flutter_extensions_pack.dart';
 
-abstract class UtilService {
+abstract class Utils {
+  static String formateDateTimeStamp(
+    int timeStamp, 
+    {String format = 'dd-MMM-yyyy', bool showtime = false}
+  ) {
+    return showtime
+      ? DateTime.fromMillisecondsSinceEpoch(timeStamp).format('dd-MMM-yyyy hh:mm a')
+      : DateTime.fromMillisecondsSinceEpoch(timeStamp).format(format); 
+  }
+  
   static Future<File?> pickFile({
     String? dialogTitle,
     FileType type = FileType.any,
