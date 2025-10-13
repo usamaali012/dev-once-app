@@ -1,13 +1,14 @@
 import 'package:dev_once_app/core/constants/assets.dart';
 import 'package:dev_once_app/core/theme/app_colors.dart';
 import 'package:dev_once_app/core/widgets/app_background.dart';
+import 'package:dev_once_app/core/widgets/app_image_picker.dart';
 // import 'package:dev_once_app/core/widgets/app_image_picker.dart';
 import 'package:dev_once_app/core/widgets/app_loading.dart';
 import 'package:dev_once_app/core/widgets/app_text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
-import 'widgets/profile_header_card.dart';
+// import 'widgets/profile_header_card.dart';
 
 import 'view_profile_vm.dart';
 
@@ -30,7 +31,9 @@ class _ViewProfileVuState extends State<ViewProfileVu> {
         topCornerRadius: 30,
         leading: _doIcon,
         topRightDecoration: _roundedTopRight,
-        overlapGraphic: ProfileHeaderCard(name: vm.details.name ?? '', avatarUrl: vm.details.profileImageCompleteUrl),
+        overlapGraphic: ImageWidget(size: 40, url: vm.details.profileImageCompleteUrl),
+        // overlapGraphic: ProfileHeaderCard(name: vm.details.name ?? '', avatarUrl: vm.details.profileImageCompleteUrl),
+        showBackButton: true,
         child: context.watch<ViewProfileVm>().isBusy
             ? Center(child: LoadingWidget(size: 30, color: AppColors.primary))
             : Column(
