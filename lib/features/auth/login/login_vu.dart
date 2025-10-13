@@ -6,7 +6,7 @@ import 'package:dev_once_app/features/auth/forgot_password/forgot_password_vu.da
 import 'package:dev_once_app/features/auth/login/login_vm.dart';
 import 'package:dev_once_app/core/widgets/app_background.dart';
 import 'package:dev_once_app/features/profile/caution/caution_vu.dart';
-import 'package:dev_once_app/features/profile/view_profile/view_profile_vu.dart';
+import 'package:dev_once_app/features/profile/profile_home/profile_home_vu.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_extensions_pack/flutter_extensions_pack.dart';
 import 'package:flutter_svg/svg.dart';
@@ -171,7 +171,7 @@ class _LoginVuState extends State<LoginVu> {
           context.pushReplacement(CautionScreen());
         } else {
           // ignore: use_build_context_synchronously
-          context.pushReplacement(ViewProfileVu());
+          context.pushReplacement(ProfileHomeVu());
         }
         
       } else {
