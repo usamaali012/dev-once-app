@@ -36,6 +36,7 @@ class _UpdateProfileVuState extends State<UpdateProfileVu> {
         leading: doIcon,
         topRightDecoration: roundedTopRight,
         overlapGraphic: ImageWidget(size: 40, url: vm.details.profileImageCompleteUrl),
+        showBackButton: true,
         child: context.watch<UpdateProfileVm>().isLoading
           ? Center(child: LoadingWidget(size: 30, color: AppColors.primary))
           : Form(

@@ -35,6 +35,7 @@ class _UpdateBankDetailsVuState extends State<UpdateBankDetailsVu> {
         leading: doIcon,
         topRightDecoration: roundedTopRight,
         // overlapGraphic: mobileIcon,
+        showBackButton: true,
         child: context.watch<UpdateBankDetailsVm>().isLoading
           ? Center(
               child: LoadingWidget(size: 30, color: AppColors.primary),
