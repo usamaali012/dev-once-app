@@ -5,7 +5,7 @@ import 'package:dev_once_app/core/utils/extensions.dart';
 import 'dashboard_model.dart';
 
 class DashboardVm extends BaseProvider {
-  DashboardModel details = const DashboardModel();
+  DashboardModel data = const DashboardModel();
 
   Future<({bool success, String? message})> get() async {
     setBusy(true);
@@ -16,7 +16,7 @@ class DashboardVm extends BaseProvider {
       );
       final res = await client.get(cfg);
       if (res.success) {
-        details = res.data!;
+        data = res.data!;
         return (success: true, message: null);
       }
       return (success: false, message: res.message);
