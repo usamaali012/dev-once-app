@@ -1,5 +1,6 @@
 import 'package:dev_once_app/features/auth/forgot_password/forgot_password_vm.dart';
 import 'package:dev_once_app/features/auth/otp/otp_vm.dart';
+import 'package:dev_once_app/features/dashboard/dashboard_vm.dart';
 import 'package:dev_once_app/features/profile/caution/caution_vm.dart';
 import 'package:dev_once_app/features/auth/reset_password/reset_password_vm.dart';
 import 'package:dev_once_app/features/profile/update_bank_details/update_bank_details_vm.dart';
@@ -34,6 +35,7 @@ class DevOnceApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => UpdateBankDetailsVm()..get()),
         ChangeNotifierProvider(create: (_) => UpdateProfileVm()..get()),
         ChangeNotifierProvider(create: (_) => ViewProfileVm()..get()),
+        ChangeNotifierProvider(create: (_) => DashboardVm()..get()),
       ],
       child: MaterialApp(
         title: 'Dev Once',
