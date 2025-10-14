@@ -14,13 +14,13 @@ class ImageWidget extends StatelessWidget {
       width: size,
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
-          boxShadow: [BoxShadow(
-              color: Colors.grey.withOpacity(0.8), // Shadow color with opacity
-              spreadRadius: 0,                   // How much the shadow spreads
-              blurRadius: 10,                     // How blurry the shadow is
-              offset: const Offset(0, 3),        // Offset of the shadow (x, y)
-            ),
-          ],
+          // boxShadow: [BoxShadow(
+          //     color: Colors.grey.withOpacity(0.8), // Shadow color with opacity
+          //     spreadRadius: 0,                   // How much the shadow spreads
+          //     blurRadius: 10,                     // How blurry the shadow is
+          //     offset: const Offset(0, 3),        // Offset of the shadow (x, y)
+          //   ),
+          // ],
           image: DecorationImage(
               fit: BoxFit.cover,
               image: NetworkImage(
