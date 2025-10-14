@@ -10,6 +10,9 @@ class AppAssets {
   static const String mobileIcon = '$svgs/mobile-icon.svg';
   static const String user = '$svgs/user.svg';
   static const String lock = '$svgs/lock.svg';
+  static const String dashboardTop = '$svgs/dashboard-top.svg';
+  static const String dashboardMiddle = '$svgs/dashboard-middle.svg';
+  static const String goTo = '$svgs/go-to.svg';
 }
 
 class AppFonts {
