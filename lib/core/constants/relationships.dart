@@ -8,7 +8,7 @@ final relationships = [
   DropdownMenuItem(value: 'Son', child: Text('Son')),
   DropdownMenuItem(value: 'Husband', child: Text('Husband')),
   DropdownMenuItem(value: 'Grandfather', child: Text('Grandfather')),
-  DropdownMenuItem(value: 'Uncle', child: Text('Grandson')),
+  DropdownMenuItem(value: 'Grandson', child: Text('Grandson')),
   DropdownMenuItem(value: 'Uncle', child: Text('Uncle')),
   DropdownMenuItem(value: 'Nephew', child: Text('Nephew')),
   DropdownMenuItem(value: 'Daughter', child: Text('Daughter')),
