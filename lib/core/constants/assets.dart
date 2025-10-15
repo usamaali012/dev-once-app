@@ -13,6 +13,9 @@ class AppAssets {
   static const String dashboardTop = '$svgs/dashboard-top.svg';
   static const String dashboardMiddle = '$svgs/dashboard-middle.svg';
   static const String goTo = '$svgs/go-to.svg';
+  static const String transferRollover = '$svgs/transfer-rollover.svg';
+  static const String userEdit = '$svgs/user-edit.svg';
+  static const String withdraw = '$svgs/withdraw.svg';
 }
 
 class AppFonts {
