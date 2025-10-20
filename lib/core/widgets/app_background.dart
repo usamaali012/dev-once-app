@@ -1,3 +1,4 @@
+// Not being used anymore but kept for reference.
 import 'package:dev_once_app/core/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 
@@ -42,7 +43,7 @@ class AppBackground extends StatelessWidget {
 
     return SizedBox.expand(
       child: ColoredBox(           
-        color: AppColors.secondary,
+        color: AppColors.primary,
         child: Stack(
           clipBehavior: Clip.none,
           children: [
@@ -53,7 +54,7 @@ class AppBackground extends StatelessWidget {
             right: 0,
             height: headerHeight,
             child: Container(
-              color: AppColors.secondary,
+              color: AppColors.primary,
               child: Row(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
