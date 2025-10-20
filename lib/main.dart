@@ -42,19 +42,28 @@ class DevOnceApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
           useMaterial3: true,
-          fontFamily: AppFonts.poppins,
+          fontFamily: AppFonts.supreme,
           colorScheme: ColorScheme.fromSeed(seedColor: AppColors.primary),
           textButtonTheme: TextButtonThemeData(
             style: TextButton.styleFrom(
               foregroundColor: AppColors.primary,
-              textStyle: const TextStyle(fontWeight: FontWeight.w600),
+              textStyle: const TextStyle(
+                fontSize: 16,
+                fontFamily: AppFonts.supreme,
+                fontWeight: FontWeight.w600
+              ),
             ),
           ),
           elevatedButtonTheme: ElevatedButtonThemeData(
             style: ElevatedButton.styleFrom(
               backgroundColor: AppColors.primary,
               foregroundColor: Colors.white,
-              textStyle: const TextStyle(fontWeight: FontWeight.w600),
+              textStyle: const TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
+                fontFamily: AppFonts.supreme,
+              ),
+
             ),
           ),
         ),
