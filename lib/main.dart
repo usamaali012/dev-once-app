@@ -28,14 +28,14 @@ class DevOnceApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => LoginVm()),
-        ChangeNotifierProvider(create: (_) => ForgotPasswordVm()),
-        ChangeNotifierProvider(create: (_) => OtpVm()),
-        ChangeNotifierProvider(create: (_) => ResetPasswordVm()),
-        ChangeNotifierProvider(create: (_) => CautionVm()..get()),
-        ChangeNotifierProvider(create: (_) => UpdateBankDetailsVm()..get()),
-        ChangeNotifierProvider(create: (_) => UpdateProfileVm()..get()),
-        ChangeNotifierProvider(create: (_) => ViewProfileVm()..get()),
-        ChangeNotifierProvider(create: (_) => DashboardVm()..get()),
+        // ChangeNotifierProvider(create: (_) => ForgotPasswordVm()),
+        // ChangeNotifierProvider(create: (_) => OtpVm()),
+        // ChangeNotifierProvider(create: (_) => ResetPasswordVm()),
+        // ChangeNotifierProvider(create: (_) => CautionVm()..get()),
+        // ChangeNotifierProvider(create: (_) => UpdateBankDetailsVm()..get()),
+        // ChangeNotifierProvider(create: (_) => UpdateProfileVm()..get()),
+        // ChangeNotifierProvider(create: (_) => ViewProfileVm()..get()),
+        // ChangeNotifierProvider(create: (_) => DashboardVm()..get()),
       ],
       child: MaterialApp(
         title: 'Dev Once',
@@ -58,10 +58,14 @@ class DevOnceApp extends StatelessWidget {
             style: ElevatedButton.styleFrom(
               backgroundColor: AppColors.primary,
               foregroundColor: Colors.white,
+              padding: const EdgeInsets.symmetric(vertical: 20),
               textStyle: const TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w500,
                 fontFamily: AppFonts.supreme,
+              ),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
               ),
 
             ),

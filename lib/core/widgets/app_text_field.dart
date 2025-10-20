@@ -14,7 +14,7 @@ class AppTextField extends StatefulWidget {
     this.inputLabel,
     this.placeholder,
     this.labelColor = Colors.black,
-    this.fillColor = const Color(0xFFF3F3F3),
+    this.fillColor = const Color(0xFFF2F2F2),
     this.prefixSvg,
     this.suffixSvg,
     this.iconColor = const Color(0xFF626262),
@@ -118,6 +118,10 @@ class _AppTextFieldState extends State<AppTextField> {
         maxLines: widget.isPassword ? 1 : widget.maxLines,
         decoration: InputDecoration(
           hintText: widget.placeholder,
+          hintStyle: TextStyle(
+            fontSize: 12,
+            letterSpacing: 0,
+          ),
           labelText: widget.inputLabel,
           filled: true,
           fillColor: widget.fillColor,
@@ -131,6 +135,8 @@ class _AppTextFieldState extends State<AppTextField> {
                 child: SvgPicture.asset(
                   widget.prefixSvg!,
                   colorFilter: ColorFilter.mode(widget.iconColor, BlendMode.srcIn),
+                  height: 10,
+                  width: 10,
                 ),
               )
             : null,
