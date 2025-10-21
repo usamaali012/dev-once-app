@@ -8,7 +8,6 @@ import 'package:dev_once_app/features/auth/login/login_vm.dart';
 // import 'package:dev_once_app/features/profile/caution/caution_vu.dart';
 import 'package:flutter/material.dart';
 // import 'package:flutter_extensions_pack/flutter_extensions_pack.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 
 class LoginVu extends StatefulWidget {
@@ -24,7 +23,6 @@ class _LoginVuState extends State<LoginVu> {
   @override
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
-    final screenWidth = MediaQuery.of(context).size.width;
     final vm = context.watch<LoginVm>();
     return Scaffold(
       body: SingleChildScrollView(
@@ -66,18 +64,28 @@ class _LoginVuState extends State<LoginVu> {
                     ),
                   ),
                   
-                  Divider(
-                    thickness: 2,
-                    color: AppColors.primary,
-                    indent: 0,
-                    endIndent: screenWidth * 0.8,
+                  SizedBox(height: screenHeight * 0.01),
+                  Stack(
+                    children: [
+                      Container(
+                        height: 2,
+                        width: 120,
+                        decoration: BoxDecoration(
+                          color: Color(0xFFD9D9D9),
+                        ),
+                      ),
+                      Positioned(
+                        left: 0,
+                        child: Container(
+                          height: 2,
+                          width: 40,
+                          decoration: BoxDecoration(
+                            color: AppColors.primary,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                  // Divider(
-                  //   thickness: 2,
-                  //   color: AppColors.grey,
-                  //   indent: 0,
-                  //   // endIndent: screenWidth * 0.8,
-                  // ),
                   
                   SizedBox(height: screenHeight * 0.07),
                   Text(
@@ -176,7 +184,6 @@ class _LoginVuState extends State<LoginVu> {
                 ]
               ),
             )
-          
           ],
         ),
       )
