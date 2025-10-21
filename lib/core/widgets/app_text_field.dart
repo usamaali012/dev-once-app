@@ -121,6 +121,8 @@ class _AppTextFieldState extends State<AppTextField> {
           hintStyle: TextStyle(
             fontSize: 12,
             letterSpacing: 0,
+            fontWeight: FontWeight.w500,
+            color: AppColors.grey
           ),
           labelText: widget.inputLabel,
           filled: true,
