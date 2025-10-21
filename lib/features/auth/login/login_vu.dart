@@ -49,7 +49,7 @@ class _LoginVuState extends State<LoginVu> {
                     'ACCESS',
                     style: TextStyle(
                       fontSize: 26,
-                      fontWeight: FontWeight.w700,
+                      fontWeight: FontWeight.bold,
                       color: AppColors.primary,
                       letterSpacing: -0.7,
                       height: 0
@@ -89,20 +89,19 @@ class _LoginVuState extends State<LoginVu> {
                     ],
                   ),
                   
-                  SizedBox(height: screenHeight * 0.07),
+                  SizedBox(height: screenHeight * 0.09),
                   Text(
                     'Enter your User ID and password \n to continue',
                     textAlign: TextAlign.center,
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    style: TextStyle(
                       color: AppColors.grey,
                       fontSize: 14,
                       fontWeight: FontWeight.w500,
                       letterSpacing: 0,
-                      
                     ),
                   ),
                 
-                  SizedBox(height: screenHeight * 0.025),
+                  SizedBox(height: screenHeight * 0.03),
                   AppTextField(
                     placeholder: 'User ID',
                     prefixSvg: AppAssets.user,
@@ -111,7 +110,7 @@ class _LoginVuState extends State<LoginVu> {
                     validator: context.read<LoginVm>().onUsernameValidate,
                   ),
 
-                  SizedBox(height: screenHeight * 0.035),
+                  SizedBox(height: screenHeight * 0.04),
                   AppTextField(
                     placeholder: 'Password',
                     prefixSvg: AppAssets.lock,
@@ -136,7 +135,7 @@ class _LoginVuState extends State<LoginVu> {
                       ),
                       child: Text(
                         'Forgot password?',
-                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        style: TextStyle(
                           color: Colors.black,
                           fontSize: 12,
                           fontWeight: FontWeight.w300,
@@ -146,7 +145,7 @@ class _LoginVuState extends State<LoginVu> {
                     ),
                   ),
 
-                  SizedBox(height: screenHeight * 0.035),
+                  SizedBox(height: screenHeight * 0.05),
                   ElevatedButton(
                     onPressed: vm.isBusy ? null : _onLogin, 
                     child: vm.isBusy
@@ -161,10 +160,10 @@ class _LoginVuState extends State<LoginVu> {
                       : const Text('Login'),
                   ),
                   
-                  SizedBox(height: screenHeight * 0.05),
+                  SizedBox(height: screenHeight * 0.055 ),
                   Column(
                     children: [
-                      Icon(Icons.fingerprint, size: 42, color: Color(0xFF636E7C)),
+                      Icon(Icons.fingerprint, size: 52, color: Color(0xFF636E7C)),
                       SizedBox(height: screenHeight * 0.025),
                       Divider(
                         thickness: 1,
@@ -178,7 +177,7 @@ class _LoginVuState extends State<LoginVu> {
                         style: TextStyle(
                           color: AppColors.grey,
                           fontSize: 18,
-                          fontWeight: FontWeight.w400,
+                          letterSpacing: 0,
                         ),
                       ),
                     ],
