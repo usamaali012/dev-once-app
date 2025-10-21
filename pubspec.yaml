@@ -48,7 +48,52 @@ flutter:
     - assets/pngs/
 
   fonts:
-    - family: Poppins
+    - family: Supreme
       fonts:
+        # Static weights
+        - asset: assets/fonts/supreme/Supreme-Thin.ttf
+          weight: 100
+        - asset: assets/fonts/supreme/Supreme-ThinItalic.ttf
+          weight: 100
+          style: italic
+
+        - asset: assets/fonts/supreme/Supreme-Extralight.ttf
+          weight: 200
+        - asset: assets/fonts/supreme/Supreme-ExtralightItalic.ttf
+          weight: 200
+          style: italic
+
+        - asset: assets/fonts/supreme/Supreme-Light.ttf
+          weight: 300
+        - asset: assets/fonts/supreme/Supreme-LightItalic.ttf
+          weight: 300
+          style: italic
+
+        - asset: assets/fonts/supreme/Supreme-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/supreme/Supreme-Italic.ttf
+          weight: 400
+          style: italic
+
+        - asset: assets/fonts/supreme/Supreme-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/supreme/Supreme-MediumItalic.ttf
+          weight: 500
+          style: italic
+
+        - asset: assets/fonts/supreme/Supreme-Bold.ttf
+          weight: 700
+        - asset: assets/fonts/supreme/Supreme-BoldItalic.ttf
+          weight: 700
+          style: italic
+
+        - asset: assets/fonts/supreme/Supreme-Extrabold.ttf
+          weight: 800
+        - asset: assets/fonts/supreme/Supreme-ExtraboldItalic.ttf
+          weight: 800
+          style: italic
+
+        # Variable fonts (optional, kept for completeness)
         - asset: assets/fonts/supreme/Supreme-Variable.ttf
         - asset: assets/fonts/supreme/Supreme-VariableItalic.ttf
+          style: italic

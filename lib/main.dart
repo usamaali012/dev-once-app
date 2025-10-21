@@ -62,7 +62,7 @@ class DevOnceApp extends StatelessWidget {
               textStyle: const TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w500,
-                fontFamily: AppFonts.supreme,
+                letterSpacing: 0
               ),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10),
