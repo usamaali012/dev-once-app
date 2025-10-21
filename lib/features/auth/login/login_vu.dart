@@ -1,13 +1,14 @@
 import 'package:dev_once_app/core/constants/assets.dart';
 import 'package:dev_once_app/core/theme/app_colors.dart';
 import 'package:dev_once_app/core/utils/snackbar_service.dart';
+import 'package:dev_once_app/core/widgets/app_loading.dart';
 import 'package:dev_once_app/core/widgets/app_text_field.dart';
-// import 'package:dev_once_app/features/auth/forgot_password/forgot_password_vu.dart';
 import 'package:dev_once_app/features/auth/login/login_vm.dart';
+import 'package:dev_once_app/features/auth/forgot_password/forgot_password_vu.dart';
 // import 'package:dev_once_app/features/dashboard/dashboard_vu.dart';
 // import 'package:dev_once_app/features/profile/caution/caution_vu.dart';
 import 'package:flutter/material.dart';
-// import 'package:flutter_extensions_pack/flutter_extensions_pack.dart';
+import 'package:flutter_extensions_pack/flutter_extensions_pack.dart';
 import 'package:provider/provider.dart';
 
 class LoginVu extends StatefulWidget {
@@ -23,7 +24,7 @@ class _LoginVuState extends State<LoginVu> {
   @override
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
-    final vm = context.watch<LoginVm>();
+    final vm = context.read<LoginVm>();
     return Scaffold(
       body: SingleChildScrollView(
         child: Stack(
@@ -106,8 +107,8 @@ class _LoginVuState extends State<LoginVu> {
                     placeholder: 'User ID',
                     prefixSvg: AppAssets.user,
                     textInputAction: TextInputAction.next,
-                    onSaved: context.read<LoginVm>().onUsernameSaved,
-                    validator: context.read<LoginVm>().onUsernameValidate,
+                    onSaved: vm.onUsernameSaved,
+                    validator: vm.onUsernameValidate,
                   ),
 
                   SizedBox(height: screenHeight * 0.04),
@@ -117,8 +118,8 @@ class _LoginVuState extends State<LoginVu> {
                     isPassword: true,
                     textInputAction: TextInputAction.done,
                     onFieldSubmitted: (_) => _onLogin(),
-                    onSaved: context.read<LoginVm>().onPasswordSaved,
-                    validator: context.read<LoginVm>().onPasswordValidate,
+                    onSaved: vm.onPasswordSaved,
+                    validator: vm.onPasswordValidate,
                   ),
 
                   SizedBox(height: screenHeight * 0.02),
@@ -126,7 +127,7 @@ class _LoginVuState extends State<LoginVu> {
                     alignment: Alignment.centerRight,
                     child: TextButton(
                       onPressed: () { 
-                        // context.push(ForgotPasswordVu());
+                        context.push(ForgotPasswordVu());
                       },
                       style: TextButton.styleFrom(
                         padding: EdgeInsets.zero,
@@ -147,17 +148,8 @@ class _LoginVuState extends State<LoginVu> {
 
                   SizedBox(height: screenHeight * 0.05),
                   ElevatedButton(
-                    onPressed: vm.isBusy ? null : _onLogin, 
-                    child: vm.isBusy
-                      ? const SizedBox(
-                          width: 22,
-                          height: 22,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2.4,
-                            valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                          ),
-                        )
-                      : const Text('Login'),
+                    onPressed: context.watch<LoginVm>().isBusy ? null : _onLogin, 
+                    child: context.watch<LoginVm>().isBusy ? LoadingWidget() : const Text('Login'),
                   ),
                   
                   SizedBox(height: screenHeight * 0.055 ),
@@ -199,8 +191,9 @@ class _LoginVuState extends State<LoginVu> {
       final resp = await context.read<LoginVm>().login();
 
       if(resp.success) {
+        // ignore: use_build_context_synchronously
+        SnackbarService.showSuccessSnack(context, 'Login successful.');
         if (resp.message == 'caution') {
-          // ignore: use_build_context_synchronously
           // context.pushReplacement(CautionScreen());
         } else {
           // ignore: use_build_context_synchronously

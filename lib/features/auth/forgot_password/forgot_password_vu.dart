@@ -4,11 +4,11 @@ import 'package:dev_once_app/core/utils/snackbar_service.dart';
 import 'package:dev_once_app/core/widgets/app_loading.dart';
 import 'package:dev_once_app/core/widgets/app_text_field.dart';
 import 'package:dev_once_app/features/auth/forgot_password/forgot_password_vm.dart';
-import 'package:dev_once_app/features/auth/otp/otp_vu.dart';
-import 'package:dev_once_app/core/widgets/app_background.dart';
+// import 'package:dev_once_app/features/auth/otp/otp_vu.dart';
+// import 'package:dev_once_app/core/widgets/app_background.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_extensions_pack/flutter_extensions_pack.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+// import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 
 class ForgotPasswordVu extends StatefulWidget {
@@ -23,107 +23,136 @@ class _ForgotPasswordVuState extends State<ForgotPasswordVu> {
 
   @override
   Widget build(BuildContext context) {
+    final screenHeight = MediaQuery.of(context).size.height;
+    final screenWidth = MediaQuery.of(context).size.width;
+    final vm = context.read<ForgotPasswordVm>();
     return Scaffold(
-      body: AppBackground(
-        title: 'Forgot\nPassword',
-        headerFraction: 0.30,
-        topCornerRadius: 30,
-        showBackButton: true,
-        leading: doIcon,
-        topRightDecoration: roundedTopRight,
-        overlapGraphic: null,
-        child: Form(
-          key: _formKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              const SizedBox(height: 35),
-              Text(
-                'Enter User ID to reset your password',
-                textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: const Color(0xFF808A93),
-                      fontWeight: FontWeight.w500,
+      body: SingleChildScrollView(
+        child: Stack(
+          children: [
+            Positioned(
+              top: 0,
+              right: 0,
+              child: Image.asset(
+                AppAssets.do_,
+                height: screenHeight * 0.25,              
+              ),
+            ),
+
+            
+            Positioned(
+              top: 25,
+              left: 8,
+              child: IconButton(
+                tooltip: 'Back',
+                icon: Icon(Icons.arrow_back_ios_new_rounded),
+                onPressed: context.pop,
+              ),
+            ),
+
+            Padding(
+              padding: const EdgeInsets.all(24.0),
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    SizedBox(height: screenHeight * 0.13),
+                    Text(
+                      'FORGOT',
+                      style: TextStyle(
+                        fontSize: 26,
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.primary,
+                        letterSpacing: -0.7,
+                        height: 0
+                      ),
                     ),
-              ),
-              const SizedBox(height: 55),
-              AppTextField(
-                placeholder: 'User ID',
-                prefixSvg: AppAssets.user,
-                textInputAction: TextInputAction.done,
-                autofillHints: const [AutofillHints.username],
-                onFieldSubmitted: (_) => _onSend(),
-                onSaved: context.read<ForgotPasswordVm>().onUsernameSaved,
-                validator: context.read<ForgotPasswordVm>().onUsernameValidate,
-              ),
-              const SizedBox(height: 45),
-              Row(
-                children: [
-                  Expanded(
-                    child: SizedBox(
-                      height: 56,
-                      child: OutlinedButton(
-                        onPressed: context.pop,
-                        style: OutlinedButton.styleFrom(
-                          side: const BorderSide(color: Color(0xFFD6D6D6)),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(16),
-                          ),
-                          foregroundColor: AppColors.grey,
-                          textStyle: const TextStyle(
-                            fontWeight: FontWeight.w700,
-                            fontSize: 16,
+                    Text(
+                      'PASSWORD',
+                      style: TextStyle(
+                        fontSize: 26,
+                        fontWeight: FontWeight.w700,
+                        color: AppColors.grey,
+                        letterSpacing: -0.7,
+                        height: 0
+                      ),
+                    ),
+                    
+                    SizedBox(height: screenHeight * 0.01),
+                    Stack(
+                      children: [
+                        Container(
+                          height: 2,
+                          width: 135,
+                          decoration: BoxDecoration(
+                            color: Color(0xFFD9D9D9),
                           ),
                         ),
-                        child: const Text('Back'),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 16),
-                  Expanded(
-                    child: SizedBox(
-                      height: 56,
-                      child: Consumer<ForgotPasswordVm>(
-                        builder: (context, vm, _) {
-                          return ElevatedButton(
-                            onPressed: vm.isBusy ? null : _onSend,
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: AppColors.primary,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(16),
-                              ),
-                              textStyle: const TextStyle(
-                                fontWeight: FontWeight.w700,
-                                fontSize: 16,
-                              ),
+                        Positioned(
+                          left: 0,
+                          child: Container(
+                            height: 2,
+                            width: 40,
+                            decoration: BoxDecoration(
+                              color: AppColors.primary,
                             ),
-                            child: vm.isBusy ? LoadingWidget() : const Text('Send'),
-                          );
-                        },
+                          ),
+                        ),
+                      ],
+                    ),
+
+                    SizedBox(height: screenHeight * 0.13),
+                    Text(
+                      'Enter User ID to reset your password',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: const Color(0xFF808A93),
+                        fontWeight: FontWeight.w500,
+                        fontSize: 14,
+                        letterSpacing: 0
                       ),
                     ),
-                  ),
-                ],
+                    
+                    SizedBox(height: screenHeight * 0.02),
+                    AppTextField(
+                      placeholder: 'User ID',
+                      prefixSvg: AppAssets.user,
+                      textInputAction: TextInputAction.done,
+                      autofillHints: const [AutofillHints.username],
+                      onFieldSubmitted: (_) => _onSend(),
+                      onSaved: vm.onUsernameSaved,
+                      validator: vm.onUsernameValidate,
+                    ),
+                    SizedBox(height: screenHeight * 0.06),
+                    
+                    // Buttons are at the start of the row and not taking the full width, I need the width of the button to increase as well
+                    Row(
+                      children: [
+                        Expanded(
+                          child: OutlinedButton(
+                            onPressed: context.pop,
+                            child: Text('Back'),
+                          ),
+                        ),
+                        SizedBox(width: screenWidth * 0.07),
+                        Expanded(
+                          child: ElevatedButton(
+                            onPressed: context.watch<ForgotPasswordVm>().isBusy ? null : _onSend, 
+                            child: context.watch<ForgotPasswordVm>().isBusy ? LoadingWidget() : const Text('Send'),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
   }
-
-  final doIcon = SvgPicture.asset(
-      AppAssets.authDo,
-      width: 40,
-      height: 40,
-      fit: BoxFit.contain,
-      colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcIn),
-    );
-
-  final roundedTopRight = SvgPicture.asset(
-    AppAssets.authRoundedShapesVertical,
-    fit: BoxFit.contain,
-  );
 
   Future<void> _onSend() async {
     if (!(_formKey.currentState?.validate() ?? false)) return;
@@ -133,7 +162,8 @@ class _ForgotPasswordVuState extends State<ForgotPasswordVu> {
 
     if (resp.success) {
       // ignore: use_build_context_synchronously
-      context.push(const OtpScreen());
+      SnackbarService.showSuccessSnack(context, 'OTP sent successfully to your registered email.');
+      // context.push(const OtpScreen());
     } else {
       // ignore: use_build_context_synchronously
       SnackbarService.showErrorSnack(context, resp.message!);
