@@ -39,7 +39,9 @@ class _LoginVuState extends State<LoginVu> {
             
             Padding(
               padding: const EdgeInsets.all(24.0),
-              child: Column(
+              child: Form(
+                key: _formKey,
+                child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   SizedBox(height: screenHeight * 0.13),
@@ -183,6 +185,7 @@ class _LoginVuState extends State<LoginVu> {
                   ),
                 ]
               ),
+            ),
             )
           ],
         ),
