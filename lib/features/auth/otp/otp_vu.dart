@@ -278,14 +278,14 @@ class _OtpFields extends StatelessWidget {
     const radius = 12.0;
 
     InputDecoration decorationFor(int i) => const InputDecoration(
-          isDense: false,
-          counterText: '',
-          filled: false,
-          contentPadding: EdgeInsets.symmetric(vertical: 20),
-          border: InputBorder.none,
-          enabledBorder: InputBorder.none,
-          focusedBorder: InputBorder.none,
-        );
+      isDense: false,
+      counterText: '',
+      filled: false,
+      contentPadding: EdgeInsets.symmetric(vertical: 20),
+      border: InputBorder.none,
+      enabledBorder: InputBorder.none,
+      focusedBorder: InputBorder.none,
+    );
 
     return LayoutBuilder(
       builder: (context, constraints) {
@@ -297,7 +297,6 @@ class _OtpFields extends StatelessWidget {
 
         return Padding(
           padding: const EdgeInsets.symmetric(horizontal: 0),
-          // padding: EdgeInsets.symmetric(horizontal: sidePadding),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: List.generate(count, (i) {
