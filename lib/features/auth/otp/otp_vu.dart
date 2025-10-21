@@ -4,7 +4,7 @@ import 'package:dev_once_app/core/utils/snackbar_service.dart';
 import 'package:dev_once_app/core/widgets/app_loading.dart';
 import 'package:dev_once_app/features/auth/forgot_password/forgot_password_vm.dart';
 import 'package:dev_once_app/features/auth/otp/otp_vm.dart';
-// import 'package:dev_once_app/features/auth/reset_password/reset_password_vu.dart';
+import 'package:dev_once_app/features/auth/reset_password/reset_password_vu.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_extensions_pack/flutter_extensions_pack.dart';
@@ -255,7 +255,7 @@ class _OtpScreenState extends State<OtpScreen> {
     if (!mounted) return;
     if (resp.success) {
       SnackbarService.showSuccessSnack(context, 'OTP verified successfully.');
-      // context.push(ResetPasswordScreen());
+      context.push(ResetPasswordScreen());
     } else {
       SnackbarService.showErrorSnack(context, resp.message!);
     }

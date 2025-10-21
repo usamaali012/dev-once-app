@@ -3,13 +3,11 @@ import 'package:dev_once_app/core/theme/app_colors.dart';
 import 'package:dev_once_app/core/utils/snackbar_service.dart';
 import 'package:dev_once_app/core/widgets/app_loading.dart';
 import 'package:dev_once_app/core/widgets/app_text_field.dart';
-import 'package:dev_once_app/core/widgets/app_background.dart';
 import 'package:dev_once_app/features/auth/reset_password/reset_password_vm.dart';
 import 'package:dev_once_app/features/auth/otp/otp_vm.dart';
 import 'package:dev_once_app/features/auth/login/login_vu.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_extensions_pack/flutter_extensions_pack.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 
 class ResetPasswordScreen extends StatefulWidget {
@@ -21,6 +19,140 @@ class ResetPasswordScreen extends StatefulWidget {
 
 class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
   final _formKey = GlobalKey<FormState>();
+  
+  @override
+  Widget build(BuildContext context) {
+    final screenHeight = MediaQuery.of(context).size.height;
+    final vm = context.read<ResetPasswordVm>();
+
+    return Scaffold(
+      body: SingleChildScrollView(
+        child: Stack(
+          children: [
+            Positioned(
+              top: 0,
+              right: 0,
+              child: Image.asset(
+                AppAssets.do_,
+                height: screenHeight * 0.25,              
+              ),
+            ),
+
+            Padding(
+              padding: const EdgeInsets.all(24.0),
+              child: Form(
+                key: _formKey,
+                child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  SizedBox(height: screenHeight * 0.12),
+                  Text(
+                    'CREATE',
+                    style: TextStyle(
+                      fontSize: 26,
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.primary,
+                      letterSpacing: -0.7,
+                      height: 0
+                    ),
+                  ),
+                  Text(
+                    'PASSWORD',
+                    style: TextStyle(
+                      fontSize: 26,
+                      fontWeight: FontWeight.w700,
+                      color: AppColors.grey,
+                      letterSpacing: -0.7,
+                      height: 0
+                    ),
+                  ),
+
+                  SizedBox(height: screenHeight * 0.01),
+                  Stack(
+                    children: [
+                      Container(
+                        height: 2,
+                        width: 120,
+                        decoration: BoxDecoration(
+                          color: Color(0xFFD9D9D9),
+                        ),
+                      ),
+                      Positioned(
+                        left: 0,
+                        child: Container(
+                          height: 2,
+                          width: 40,
+                          decoration: BoxDecoration(
+                            color: AppColors.primary,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+
+                  SizedBox(height: screenHeight * 0.09),
+                  Text(
+                    'Set a new password to log in.',
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: AppColors.grey,
+                      fontWeight: FontWeight.w500,
+                      fontSize: 14,
+                    ),
+                  ),
+                  
+                  SizedBox(height: screenHeight * 0.025),
+                  AppTextField(
+                    placeholder: 'New Password',
+                    prefixSvg: AppAssets.lock,
+                    isPassword: true,
+                    textInputAction: TextInputAction.next,
+                    onSaved: vm.onPasswordSaved,
+                    validator: vm.onPasswordValidate,
+                  ),
+              
+                  SizedBox(height: screenHeight * 0.04),
+                  AppTextField(
+                    placeholder: 'Confirm Password',
+                    prefixSvg: AppAssets.lock,
+                    isPassword: true,
+                    textInputAction: TextInputAction.done,
+                    onFieldSubmitted: (_) => _onSubmit(),
+                    onSaved: vm.onConfirmPasswordSaved,
+                    validator: vm.onConfirmPasswordValidate,
+                  ),
+              
+                  SizedBox(height: screenHeight * 0.06),
+                  ElevatedButton(
+                    onPressed: context.watch<ResetPasswordVm>().isBusy ? null : _onSubmit,
+                    child: context.watch<ResetPasswordVm>().isBusy ? LoadingWidget(): const Text('Reset'),
+                  ),
+              
+                  SizedBox(height: screenHeight * 0.07),
+                  const Text(
+                    'Instructions:',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.w400,
+                      color: Colors.black,
+                      letterSpacing: 0
+                    ),
+                  ),
+                  
+                  SizedBox(height: screenHeight * 0.01),
+                  const _Bullet(text: 'Use at least one uppercase and lowercase letter.'),
+                  const _Bullet(text: 'Include at least one number or symbol.'),
+                  const _Bullet(text: 'Make it at least 8 characters long.'),
+                  const _Bullet(text: 'Ensure that both fields match.'),
+                  const _Bullet(text: 'Do not include spaces or the "|" character.'),
+                ],
+              ),
+                    ),
+            ),
+          ],
+        ),
+      ));
+  }
 
   Future<void> _onSubmit() async {
     if (!(_formKey.currentState?.validate() ?? false)) return;
@@ -37,120 +169,6 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
       SnackbarService.showErrorSnack(context, resp.message ?? 'Unable to reset password. Please try again.');
     }
   }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: AppBackground(
-        title: 'Create New\nPassword',
-        headerFraction: 0.30,
-        topCornerRadius: 30,
-        showBackButton: true,
-        leading: doIcon,
-        topRightDecoration: roundedTopRight,
-        overlapGraphic: cardGraphic,
-        child: Form(
-          key: _formKey,
-          child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Text(
-              'Set a new password to log in.',
-              textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: AppColors.grey,
-                fontWeight: FontWeight.w500,
-                fontSize: 14,
-              ),
-            ),
-            const SizedBox(height: 40),
-
-            AppTextField(
-              placeholder: 'New Password',
-              prefixSvg: AppAssets.lock,
-              isPassword: true,
-              textInputAction: TextInputAction.next,
-              onSaved: context.read<ResetPasswordVm>().onPasswordSaved,
-              validator: context.read<ResetPasswordVm>().onPasswordValidate,
-            ),
-
-            const SizedBox(height: 40),
-
-            AppTextField(
-              placeholder: 'Confirm Password',
-              prefixSvg: AppAssets.lock,
-              isPassword: true,
-              textInputAction: TextInputAction.done,
-              onFieldSubmitted: (_) => _onSubmit(),
-              onSaved: context.read<ResetPasswordVm>().onConfirmPasswordSaved,
-              validator: context.read<ResetPasswordVm>().onConfirmPasswordValidate,
-            ),
-
-            const SizedBox(height: 60),
-
-            SizedBox(
-              height: 56,
-              child: Consumer<ResetPasswordVm>(
-                builder: (context, vm, _) {
-                  return ElevatedButton(
-                    onPressed: vm.isBusy ? null : _onSubmit,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.primary,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      textStyle: const TextStyle(
-                        fontWeight: FontWeight.w700,
-                        fontSize: 16,
-                      ),
-                    ),
-                    child: vm.isBusy ? LoadingWidget(): const Text('Reset'),
-                  );
-                },
-              ),
-            ),
-
-            const SizedBox(height: 40),
-
-            // Instructions
-            const Text(
-              'Instructions:',
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.w400,
-                color: Colors.black,
-                letterSpacing: 0
-              ),
-            ),
-            const SizedBox(height: 10),
-            const _Bullet(text: 'Use at least one uppercase and lowercase letter.'),
-            const _Bullet(text: 'Include at least one number or symbol.'),
-            const _Bullet(text: 'Make it at least 8 characters long.'),
-            const _Bullet(text: 'Ensure that both fields match.'),
-            const _Bullet(text: 'Do not include spaces or the "|" character.'),
-          ],
-        ),
-      ),
-    ));
-  }
-
-  final doIcon = SvgPicture.asset(
-    AppAssets.authDo,
-    width: 40,
-    height: 40,
-    fit: BoxFit.contain,
-    colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcIn),
-  );
-
-  final roundedTopRight = SvgPicture.asset(
-    AppAssets.authRoundedShapesVertical, 
-    fit: BoxFit.contain
-  );
-
-  final cardGraphic = SvgPicture.asset(
-    AppAssets.mobileIcon, fit: 
-    BoxFit.contain
-  );
 }
 
 class _Bullet extends StatelessWidget {
@@ -164,11 +182,11 @@ class _Bullet extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text('•  ', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w400, color: Color(0xFF626366))),
+          const Text('•  ', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w400, color: AppColors.grey)),
           Expanded(
             child: Text(
               text,
-              style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w400, color: Color(0xFF626366), letterSpacing: 0),
+              style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w400, color: AppColors.grey, letterSpacing: 0),
             ),
           ),
         ],
