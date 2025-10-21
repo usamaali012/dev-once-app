@@ -1,11 +1,11 @@
-// import 'package:dev_once_app/features/auth/forgot_password/forgot_password_vm.dart';
-// import 'package:dev_once_app/features/auth/otp/otp_vm.dart';
-// import 'package:dev_once_app/features/dashboard/dashboard_vm.dart';
-// import 'package:dev_once_app/features/profile/caution/caution_vm.dart';
-// import 'package:dev_once_app/features/auth/reset_password/reset_password_vm.dart';
-// import 'package:dev_once_app/features/profile/update_bank_details/update_bank_details_vm.dart';
-// import 'package:dev_once_app/features/profile/update_profile/update_profile_vm.dart';
-// import 'package:dev_once_app/features/profile/view_profile/view_profile_vm.dart';
+import 'package:dev_once_app/features/auth/forgot_password/forgot_password_vm.dart';
+import 'package:dev_once_app/features/auth/otp/otp_vm.dart';
+import 'package:dev_once_app/features/dashboard/dashboard_vm.dart';
+import 'package:dev_once_app/features/profile/caution/caution_vm.dart';
+import 'package:dev_once_app/features/auth/reset_password/reset_password_vm.dart';
+import 'package:dev_once_app/features/profile/update_bank_details/update_bank_details_vm.dart';
+import 'package:dev_once_app/features/profile/update_profile/update_profile_vm.dart';
+import 'package:dev_once_app/features/profile/view_profile/view_profile_vm.dart';
 import 'package:dev_once_app/features/auth/login/login_vm.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_extensions_pack/flutter_extensions_pack.dart';
@@ -28,14 +28,14 @@ class DevOnceApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => LoginVm()),
-        // ChangeNotifierProvider(create: (_) => ForgotPasswordVm()),
-        // ChangeNotifierProvider(create: (_) => OtpVm()),
-        // ChangeNotifierProvider(create: (_) => ResetPasswordVm()),
-        // ChangeNotifierProvider(create: (_) => CautionVm()..get()),
-        // ChangeNotifierProvider(create: (_) => UpdateBankDetailsVm()..get()),
-        // ChangeNotifierProvider(create: (_) => UpdateProfileVm()..get()),
-        // ChangeNotifierProvider(create: (_) => ViewProfileVm()..get()),
-        // ChangeNotifierProvider(create: (_) => DashboardVm()..get()),
+        ChangeNotifierProvider(create: (_) => ForgotPasswordVm()),
+        ChangeNotifierProvider(create: (_) => OtpVm()),
+        ChangeNotifierProvider(create: (_) => ResetPasswordVm()),
+        ChangeNotifierProvider(create: (_) => CautionVm()..get()),
+        ChangeNotifierProvider(create: (_) => UpdateBankDetailsVm()..get()),
+        ChangeNotifierProvider(create: (_) => UpdateProfileVm()..get()),
+        ChangeNotifierProvider(create: (_) => ViewProfileVm()..get()),
+        ChangeNotifierProvider(create: (_) => DashboardVm()..get()),
       ],
       child: MaterialApp(
         title: 'Dev Once',
@@ -56,6 +56,7 @@ class DevOnceApp extends StatelessWidget {
           ),
           elevatedButtonTheme: ElevatedButtonThemeData(
             style: ElevatedButton.styleFrom(
+              elevation: 0,
               backgroundColor: AppColors.primary,
               foregroundColor: Colors.white,
               padding: const EdgeInsets.symmetric(vertical: 20),
@@ -70,6 +71,22 @@ class DevOnceApp extends StatelessWidget {
 
             ),
           ),
+          outlinedButtonTheme: OutlinedButtonThemeData(
+            style: OutlinedButton.styleFrom(
+              foregroundColor: AppColors.grey,
+              side: BorderSide(color: AppColors.grey),
+              padding: const EdgeInsets.symmetric(vertical: 20),
+              textStyle: const TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
+                letterSpacing: 0,
+                color: Color(0xFF848484)
+              ),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+            ),
+          )
         ),
         home: const _HomeLauncher(),
       ),
