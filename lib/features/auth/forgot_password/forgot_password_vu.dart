@@ -4,11 +4,9 @@ import 'package:dev_once_app/core/utils/snackbar_service.dart';
 import 'package:dev_once_app/core/widgets/app_loading.dart';
 import 'package:dev_once_app/core/widgets/app_text_field.dart';
 import 'package:dev_once_app/features/auth/forgot_password/forgot_password_vm.dart';
-// import 'package:dev_once_app/features/auth/otp/otp_vu.dart';
-// import 'package:dev_once_app/core/widgets/app_background.dart';
+import 'package:dev_once_app/features/auth/otp/otp_vu.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_extensions_pack/flutter_extensions_pack.dart';
-// import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 
 class ForgotPasswordVu extends StatefulWidget {
@@ -39,7 +37,6 @@ class _ForgotPasswordVuState extends State<ForgotPasswordVu> {
               ),
             ),
 
-            
             Positioned(
               top: 25,
               left: 8,
@@ -162,8 +159,9 @@ class _ForgotPasswordVuState extends State<ForgotPasswordVu> {
 
     if (resp.success) {
       // ignore: use_build_context_synchronously
+      context.push(const OtpScreen());
+      // ignore: use_build_context_synchronously
       SnackbarService.showSuccessSnack(context, 'OTP sent successfully to your registered email.');
-      // context.push(const OtpScreen());
     } else {
       // ignore: use_build_context_synchronously
       SnackbarService.showErrorSnack(context, resp.message!);

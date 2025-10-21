@@ -4,12 +4,10 @@ import 'package:dev_once_app/core/utils/snackbar_service.dart';
 import 'package:dev_once_app/core/widgets/app_loading.dart';
 import 'package:dev_once_app/features/auth/forgot_password/forgot_password_vm.dart';
 import 'package:dev_once_app/features/auth/otp/otp_vm.dart';
-import 'package:dev_once_app/core/widgets/app_background.dart';
-import 'package:dev_once_app/features/auth/reset_password/reset_password_vu.dart';
+// import 'package:dev_once_app/features/auth/reset_password/reset_password_vu.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_extensions_pack/flutter_extensions_pack.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 
 class OtpScreen extends StatefulWidget {
@@ -20,8 +18,7 @@ class OtpScreen extends StatefulWidget {
 }
 
 class _OtpScreenState extends State<OtpScreen> {
-  final List<TextEditingController> _digits =
-      List.generate(6, (_) => TextEditingController());
+  final List<TextEditingController> _digits = List.generate(6, (_) => TextEditingController());
   final List<FocusNode> _nodes = List.generate(6, (_) => FocusNode());
   
   @override
@@ -47,6 +44,158 @@ class _OtpScreenState extends State<OtpScreen> {
     context.read<OtpVm>().stopTimer();
     super.dispose();
   }
+
+  @override
+  Widget build(BuildContext context) {
+    final screenHeight = MediaQuery.of(context).size.height;
+    final vm = context.watch<OtpVm>();
+    return Scaffold(
+      body: SingleChildScrollView(
+        child: Stack(
+          children: [
+            Positioned(
+              top: 0,
+              right: 0,
+              child: Image.asset(
+                AppAssets.do_,
+                height: screenHeight * 0.25,              
+              ),
+            ),
+
+            Positioned(
+              top: 25,
+              left: 8,
+              child: IconButton(
+                tooltip: 'Back',
+                icon: Icon(Icons.arrow_back_ios_new_rounded),
+                onPressed: context.pop,
+              ),
+            ),
+            
+            Padding(
+              padding: const EdgeInsets.all(24.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                SizedBox(height: screenHeight * 0.13),
+                Text(
+                  'ENTER',
+                  style: TextStyle(
+                    fontSize: 26,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.primary,
+                    letterSpacing: -0.7,
+                    height: 0
+                  ),
+                ),
+                Text(
+                  'OTP CODE',
+                  style: TextStyle(
+                    fontSize: 26,
+                    fontWeight: FontWeight.w700,
+                    color: AppColors.grey,
+                    letterSpacing: -0.7,
+                    height: 0
+                  ),
+                ),
+                
+                SizedBox(height: screenHeight * 0.01),
+                Stack(
+                  children: [
+                    Container(
+                      height: 2,
+                      width: 120,
+                      decoration: BoxDecoration(
+                        color: Color(0xFFD9D9D9),
+                      ),
+                    ),
+                    Positioned(
+                      left: 0,
+                      child: Container(
+                        height: 2,
+                        width: 40,
+                        decoration: BoxDecoration(
+                          color: AppColors.primary,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                
+                SizedBox(height: screenHeight * 0.09),
+                Text(
+                  'Please enter the 6-digit code',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: AppColors.grey,
+                    fontWeight: FontWeight.w500,
+                    fontSize: 14,
+                  ),
+                ),
+                
+                SizedBox(height: screenHeight * 0.025),
+                _OtpFields(
+                  controllers: _digits,
+                  nodes: _nodes,
+                  onChanged: _onChanged,
+                ),
+                
+                SizedBox(height: screenHeight * 0.025),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      "Didn't receive 6-digit code?",
+                      style: TextStyle(
+                        color: AppColors.grey,
+                        fontWeight: FontWeight.w500,
+                        fontSize: 14
+                      ),
+                    ),
+                    const SizedBox(width: 6),
+                    Consumer<OtpVm>(
+                      builder: (context, vm, _) => Text(
+                        _formatTime(vm.secondsLeft),
+                        style: TextStyle(
+                          color: AppColors.primary,
+                          fontWeight: FontWeight.w500,
+                          fontSize: 14
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+
+                SizedBox(height: screenHeight * 0.02),
+                Center(
+                  child: ElevatedButton(
+                    onPressed: vm.canResend ? _onResend : null,
+                    style: ElevatedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      backgroundColor: AppColors.primary,
+                      shape: const StadiumBorder(),
+                      textStyle: const TextStyle(
+                        fontSize: 13,
+                      ),
+                    ),
+                    child: vm.isResendBusy ? LoadingWidget() : const Text('Resend OTP'),
+                  ),
+                ),
+                
+                SizedBox(height: screenHeight * 0.02),
+                
+                ElevatedButton(
+                  onPressed: context.watch<OtpVm>().canVerify ? _onVerify : null,
+                  child: vm.isBusy ? LoadingWidget() : const Text('Verify'),
+                ),
+              ],
+            ),
+          ),
+        ],
+      )
+    )
+  );
+}
 
   String _formatTime(int totalSeconds) {
     final minutes = totalSeconds ~/ 60;
@@ -106,142 +255,11 @@ class _OtpScreenState extends State<OtpScreen> {
     if (!mounted) return;
     if (resp.success) {
       SnackbarService.showSuccessSnack(context, 'OTP verified successfully.');
-      context.push(ResetPasswordScreen());
+      // context.push(ResetPasswordScreen());
     } else {
       SnackbarService.showErrorSnack(context, resp.message!);
     }
   }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: AppBackground(
-        title: 'Enter\nOTP Code',
-        headerFraction: 0.30,
-        topCornerRadius: 30,
-        showBackButton: true,
-        leading: doIcon,
-        topRightDecoration: roundedTopRight,
-        overlapGraphic: mobileIcon,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            const SizedBox(height: 16),
-            Text(
-              'Please enter the 6-digit code',
-              textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: AppColors.grey,
-                    fontWeight: FontWeight.w500,
-                    fontSize: 16,
-                  ),
-            ),
-            const SizedBox(height: 18),
-            _OtpFields(
-              controllers: _digits,
-              nodes: _nodes,
-              onChanged: _onChanged,
-            ),
-            const SizedBox(height: 16),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  "Didn't receive 6-digit code?",
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: AppColors.grey,
-                        fontWeight: FontWeight.w500,
-                      ),
-                ),
-                const SizedBox(width: 6),
-                Consumer<OtpVm>(
-                  builder: (context, vm, _) => Text(
-                    _formatTime(vm.secondsLeft),
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          color: AppColors.primary,
-                          fontWeight: FontWeight.w600,
-                        ),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 18),
-            Center(
-              child: SizedBox(
-                height: 36,
-                child: Consumer<OtpVm>(
-                  builder: (context, vm, _) {
-                    return ElevatedButton(
-                      onPressed: vm.canResend ? _onResend : null,
-                      style: ElevatedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(horizontal: 20),
-                        backgroundColor: AppColors.primary,
-                        shape: const StadiumBorder(),
-                        textStyle: const TextStyle(
-                          fontWeight: FontWeight.w700,
-                          fontSize: 13,
-                        ),
-                      ),
-                      child: vm.isResendBusy
-                          ? const SizedBox(
-                              width: 18,
-                              height: 18,
-                              child: CircularProgressIndicator(
-                                strokeWidth: 2,
-                                valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                              ),
-                            )
-                          : const Text('Resend OTP'),
-                    );
-                  },
-                ),
-              ),
-            ),
-            const SizedBox(height: 16),
-            SizedBox(
-              height: 56,
-              child: Consumer<OtpVm>(
-                builder: (context, vm, _) {
-                  return ElevatedButton(
-                    onPressed: vm.canVerify ? _onVerify : null,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.primary,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                      textStyle: const TextStyle(
-                        fontWeight: FontWeight.w700,
-                        fontSize: 16,
-                      ),
-                    ),
-                    child: vm.isBusy ? LoadingWidget() : const Text('Verify'),
-                  );
-                },
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  final doIcon = SvgPicture.asset(
-      AppAssets.authDo,
-      width: 40,
-      height: 40,
-      fit: BoxFit.contain,
-      colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcIn),
-    );
-    
-  final roundedTopRight = SvgPicture.asset(
-    AppAssets.authRoundedShapesVertical, 
-    fit: BoxFit.contain
-  );
-  
-  final mobileIcon = SvgPicture.asset(
-    AppAssets.mobileIcon, 
-    fit: BoxFit.contain
-  );
 }
 
 class _OtpFields extends StatelessWidget {
@@ -257,22 +275,16 @@ class _OtpFields extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const radius = 14.0;
+    const radius = 12.0;
 
-    InputDecoration decorationFor(int i) => InputDecoration(
+    InputDecoration decorationFor(int i) => const InputDecoration(
           isDense: false,
           counterText: '',
-          filled: true,
-          fillColor: const Color(0xFFF3F3F3),
-          contentPadding: const EdgeInsets.symmetric(vertical: 14),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(radius),
-            borderSide: const BorderSide(color: AppColors.primary, width: 1.4),
-          ),
-          enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(radius),
-            borderSide: BorderSide.none,
-          ),
+          filled: false,
+          contentPadding: EdgeInsets.symmetric(vertical: 20),
+          border: InputBorder.none,
+          enabledBorder: InputBorder.none,
+          focusedBorder: InputBorder.none,
         );
 
     return LayoutBuilder(
@@ -280,27 +292,44 @@ class _OtpFields extends StatelessWidget {
         final count = controllers.length;
         final sidePadding = constraints.maxWidth * 0.06; // 6% horizontal padding
         final usable = constraints.maxWidth - (sidePadding * 2);
-        final gap = usable * 0.02; // 2% gaps between boxes
+        final gap = usable * 0.04;
         final boxWidth = (usable - gap * (count - 1)) / count;
-        const boxHeight = 68.0; // taller boxes
 
         return Padding(
-          padding: EdgeInsets.symmetric(horizontal: sidePadding),
+          padding: const EdgeInsets.symmetric(horizontal: 0),
+          // padding: EdgeInsets.symmetric(horizontal: sidePadding),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: List.generate(count, (i) {
               return Padding(
                 padding: EdgeInsets.only(left: i == 0 ? 0 : gap),
-                child: SizedBox(
+                child: Container(
                   width: boxWidth,
-                  height: boxHeight,
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFF3F3F3),
+                    borderRadius: BorderRadius.circular(radius),
+                    border: Border.all(
+                      color: Colors.white,
+                      width: 1.4,
+                    ),
+                    boxShadow: const [
+                      BoxShadow(
+                        color: Color.fromRGBO(0, 0, 0, 0.08), // 8% black
+                        blurRadius: 4, // Blur 4
+                        spreadRadius: 0,
+                        offset: Offset(0, 4), // X:0, Y:4
+                      ),
+                    ],
+                  ),
                   child: TextField(
                     controller: controllers[i],
                     focusNode: nodes[i],
                     textAlign: TextAlign.center,
                     textAlignVertical: TextAlignVertical.center,
-                    style:
-                        const TextStyle(fontSize: 22, fontWeight: FontWeight.w700),
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w500,
+                    ),
                     keyboardType: TextInputType.number,
                     textInputAction:
                         i == count - 1 ? TextInputAction.done : TextInputAction.next,
