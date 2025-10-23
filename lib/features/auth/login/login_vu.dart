@@ -7,6 +7,7 @@ import 'package:dev_once_app/features/auth/login/login_vm.dart';
 import 'package:dev_once_app/features/auth/forgot_password/forgot_password_vu.dart';
 // import 'package:dev_once_app/features/dashboard/dashboard_vu.dart';
 import 'package:dev_once_app/features/profile/caution/caution_vu.dart';
+import 'package:dev_once_app/features/profile/view_profile/view_profile_vu.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_extensions_pack/flutter_extensions_pack.dart';
 import 'package:provider/provider.dart';
@@ -195,11 +196,11 @@ class _LoginVuState extends State<LoginVu> {
         SnackbarService.showSuccessSnack(context, 'Login successful.');
         if (resp.message == 'caution') {
           // ignore: use_build_context_synchronously
-          context.pushReplacement(CautionScreen());
+          context.pushReplacement(ViewProfileVu());
         } else {
           // ignore: use_build_context_synchronously
-          context.pushReplacement(CautionScreen());
-          // context.pushReplacement(DashboardVu());
+          context.pushReplacement(ViewProfileVu());
+          // context.pushReplacement(CautionScreen());
         }
         
       } else {

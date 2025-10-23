@@ -22,7 +22,7 @@ class ImageWidget extends StatelessWidget {
           //   ),
           // ],
           image: DecorationImage(
-              fit: BoxFit.cover,
+              fit: BoxFit.fill ,
               image: NetworkImage(
                   url ?? 'https://backend.tfsworks.com/files/common/placeholder.png'))),
     );
